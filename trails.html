@@ -61,7 +61,7 @@
 <div class="wrap">
 <header>
   <h1>Trail run picker</h1>
-  <p>Two run days: <strong>Tue Sep 29 afternoon</strong> (car at PDX ~1:30pm, sunset 6:55, sleep in Centralia) and <strong>Wed Sep 30</strong> (start from Centralia, end in Portland). Pick a day, set how far you'll drive, and the cards tell you whether it fits and when you'd arrive.</p>
+  <p>Two run days: <strong>Tue Sep 29 afternoon</strong> (car at PDX ~1:30pm, sunset 6:55, sleep in Centralia) and <strong>Wed Sep 30</strong> (start from Centralia, end in Portland). Pick a day, set how far you'll drive, and the cards tell you whether it fits and when you'd arrive. The third option, <strong>Wed from Leavenworth</strong>, is the Enchantments plan: skip Centralia, drive PDX → Leavenworth Tuesday (4 h 45, or 5 h 30 with a quick Angel's Rest run first), sleep there, run at dawn, drive 5 h back to Portland.</p>
   <nav><a href="index.html">← Trip plan</a></nav>
 </header>
 
@@ -75,6 +75,7 @@
     <div class="seg" id="daySeg">
       <button data-day="tue" class="on">Tue · from PDX 1:30pm</button>
       <button data-day="wed">Wed · from Centralia 8am</button>
+      <button data-day="leav">Wed · from Leavenworth 6:30am</button>
     </div>
   </label>
   <label><span>Max drive from start: <b id="maxLbl">3 h</b></span>
@@ -134,6 +135,11 @@ const trails = [
     note:'The single best short run in the Northwest: meadows, glaciers, Rainier filling the sky, late-Sep fall color. Panorama Point at the top. Add Golden Gate or Paradise Glacier for more. Lots fill early in summer; late Sep weekday is fine. Check for early snow.' },
   { id:'burroughs', name:'Burroughs Mountain from Sunrise', region:'Mt Rainier NP, WA', ll:[46.9146,-121.6431], mi:9, gain:2500, hrs:2.5, stars:3, pdx:200, cent:165, toPdx:200, toCent:165, pass:'$30/car. Sunrise Rd often closes for the season late Sep / early Oct — verify on nps.gov.',
     note:'Tundra ridge walk straight at the Emmons Glacier, closest you can get to the summit without climbing. Highest road-accessible point in the park. Far from everything.' },
+  // --- Enchantments ---
+  { id:'ench_core', name:'Enchantments – Colchuck Lake → Aasgard Pass → Core', region:'Alpine Lakes Wilderness, WA', ll:[47.5275,-120.8207], mi:14, gain:4400, hrs:6, stars:3, pdx:285, cent:225, leav:30, toPdx:300, toCent:240, pass:'NW Forest Pass. No permit for day use (overnights are lottery-only).',
+    note:'The best alpine terrain in Washington: granite basins, turquoise lakes, mountain goats, and golden larches from late Sep into Oct. Out-and-back from Stuart Lake TH: Colchuck Lake at 4 mi (2,200 ft), then Aasgard Pass — 2,000 ft in 0.8 mi of boulder scrambling — into the upper core. Turn around whenever. No car shuttle needed. Only works if you sleep in Leavenworth Tuesday night.' },
+  { id:'ench_thru', name:'Enchantments thru-run (Stuart Lake TH → Snow Lakes TH)', region:'Alpine Lakes Wilderness, WA', ll:[47.5275,-120.8207], mi:19, gain:4500, hrs:8, stars:3, pdx:285, cent:225, leav:30, toPdx:300, toCent:240, pass:'NW Forest Pass. Day use needs no permit.',
+    note:'The full traverse: up Aasgard, across every lake in the core, down 6,000 ft past Snow and Nada Lakes. 8–10 h for a fit runner. Trailheads are 10 mi apart — needs the Leavenworth trailhead shuttle (book ahead) or a second car. Finishing at 3pm then driving 5 h to Portland is a very long day; realistically this means a second night in Leavenworth, which breaks the Thursday 2:40 flight.' },
   // --- Olympics ---
   { id:'ellinor', name:'Mount Ellinor', region:'Olympic NF, WA', ll:[47.5103,-123.2477], mi:3.2, gain:2400, hrs:2, stars:2, pdx:180, cent:90, toPdx:180, toCent:90, pass:'NW Forest Pass.',
     note:'Short and savage: 2,400 ft in 1.6 mi from the upper trailhead. Summit looks over Hood Canal to Rainier and Seattle. Mountain goats. Only from Centralia/Olympia — it\'s west over Hood Canal.' },
@@ -157,7 +163,9 @@ const trails = [
 const origins = {
   tue: { name:'PDX (Tue 1:30pm)', ll:[45.5871,-122.5928], key:'pdx', startMin:13*60+30, deadline:18*60+45, after:'toCent', afterName:'Centralia', afterLabel:'ETA Centralia' },
   wed: { name:'Centralia (Wed 8am)', ll:[46.7204,-122.9614], key:'cent', startMin:8*60, deadline:20*60, after:'toPdx', afterName:'Portland', afterLabel:'ETA Portland' },
+  leav: { name:'Leavenworth (Wed 6:30am)', ll:[47.5962,-120.6615], key:'leav', startMin:6*60+30, deadline:20*60, after:'toPdx', afterName:'Portland', afterLabel:'ETA Portland' },
 };
+trails.forEach(t => { if(t.leav==null) t.leav = 999; });
 const endPoints = [ ['Portland (downtown)',[45.5202,-122.6742]], ['Seattle',[47.6038,-122.3301]] ];
 const fmt = m => { m=Math.round(m); const h=Math.floor(m/60)%24, mm=m%60; const ap=h>=12?'pm':'am'; return `${((h+11)%12)+1}:${String(mm).padStart(2,'0')}${ap}`; };
 const hrsFmt = m => m>=60 ? `${Math.floor(m/60)}h${m%60?` ${m%60}m`:''}` : `${m} min`;
@@ -172,6 +180,7 @@ function evaluate(t, day){
     msg = cls==='no' ? `Doesn't fit: you'd finish at ${fmt(runEnd)}, after dark.` : `Drive ${hrsFmt(drive)}, run ${fmt(o.startMin+drive+20)}–${fmt(runEnd)} (${hrsFmt(slack)} before sunset) → ${o.afterLabel} ${fmt(arrive)}`;
   } else {
     const slack = o.deadline - arrive;
+    if(drive>=999){ return { cls:'no', msg:'Not on the way from Leavenworth.', drive }; }
     cls = slack>=60?'ok':slack>=0?'tight':'no';
     msg = cls==='no' ? `Doesn't fit: back in Portland ${fmt(arrive)}.` : `Drive ${hrsFmt(drive)}, run ${fmt(o.startMin+drive+20)}–${fmt(runEnd)}, drive ${hrsFmt(t[o.after])} → ${o.afterLabel} ${fmt(arrive)}`;
   }
@@ -217,7 +226,7 @@ function render(){
         <div class="stat"><b>${t.mi} mi</b><small>distance</small></div>
         <div class="stat"><b>${t.gain.toLocaleString()}</b><small>ft gain</small></div>
         <div class="stat"><b>~${t.hrs} h</b><small>run time</small></div>
-        <div class="stat"><b>${hrsFmt(ev.drive)}</b><small>drive from ${day==='tue'?'PDX':'Centralia'}</small></div>
+        <div class="stat"><b>${hrsFmt(ev.drive)}</b><small>drive from ${day==='tue'?'PDX':day==='wed'?'Centralia':'Leavenworth'}</small></div>
       </div>
       <div class="fit ${ev.cls}">${ev.cls==='tight'?'Tight. ':''}${ev.msg}</div>
       <div class="note">${t.note}</div>
