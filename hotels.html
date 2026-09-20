@@ -9,7 +9,7 @@
   :root {
     --bg:#f7f6f2; --card:#fff; --ink:#1f2320; --muted:#5f665f; --line:#e2e0d8;
     --accent:#2f6f4e; --accent-soft:#e4f0e9; --warn:#9a5b12; --warn-soft:#fbeedd;
-    --pick:#34518f; --pick-soft:#e8ecf8; --hotel:#c2410c; --bar:#7c3aed; --vegan:#15803d; --helium:#e11d48;
+    --pick:#34518f; --pick-soft:#e8ecf8; --hotel:#c2410c; --strip:#7c3aed; --vegan:#15803d; --vf:#0e7490; --helium:#e11d48;
   }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#15181a; --card:#1e2225; --ink:#e8e8e3; --muted:#a2a8a2; --line:#2e3438;
@@ -22,31 +22,33 @@
   .wrap { max-width:1100px; margin:0 auto; padding:0 16px; }
   header { padding:20px 0 10px; }
   header h1 { margin:0; font-size:1.5rem; }
-  header p { margin:4px 0 0; color:var(--muted); font-size:.95rem; }
-  header nav { margin-top:6px; font-size:.9rem; }
+  header p { margin:6px 0 0; color:var(--muted); font-size:.95rem; }
+  .banner { background:var(--warn-soft); border-left:4px solid var(--warn); padding:8px 12px; border-radius:6px; color:var(--ink) !important; }
   #map { height:52vh; min-height:320px; border:1px solid var(--line); border-radius:12px; margin:12px 0 8px; }
-  .legend { display:flex; flex-wrap:wrap; gap:10px 18px; font-size:.82rem; color:var(--muted); margin-bottom:14px; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px 16px; font-size:.82rem; color:var(--muted); margin-bottom:14px; }
   .legend span::before { content:""; display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
-  .legend .h::before { background:var(--hotel); } .legend .b::before { background:var(--bar); opacity:.5; }
-  .legend .v::before { background:var(--vegan); } .legend .k::before { background:var(--helium); }
+  .legend .h::before { background:var(--hotel); } .legend .s::before { background:var(--strip); opacity:.5; }
+  .legend .v::before { background:var(--vegan); } .legend .f::before { background:var(--vf); } .legend .k::before { background:var(--helium); }
   .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0 12px; font-size:.9rem; }
-  .toolbar button { border:1px solid var(--line); background:var(--card); color:var(--ink); padding:6px 12px; border-radius:999px; cursor:pointer; font-size:.88rem; }
-  .toolbar button.on { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .toolbar button, .toolbar label.tog { border:1px solid var(--line); background:var(--card); color:var(--ink); padding:6px 12px; border-radius:999px; cursor:pointer; font-size:.88rem; }
+  .toolbar button.on, .toolbar label.tog.on { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .toolbar label.tog input { margin:0 6px 0 0; vertical-align:-1px; }
+  .toolbar .sep { width:1px; height:22px; background:var(--line); margin:0 4px; }
   .toolbar .sp { flex:1; }
   .toolbar .share { color:var(--muted); font-size:.82rem; }
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
   .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; cursor:pointer; transition:border-color .15s; }
   .card:hover, .card.active { border-color:var(--hotel); }
-  .card h3 { margin:0; font-size:1.05rem; display:flex; align-items:center; gap:8px; }
+  .card h3 { margin:0; font-size:1.05rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .num { display:inline-flex; width:22px; height:22px; border-radius:50%; background:var(--hotel); color:#fff; font-size:.78rem; font-weight:700; align-items:center; justify-content:center; flex:none; }
   .tag { font-size:.7rem; padding:2px 7px; border-radius:999px; font-weight:600; }
-  .tag.pick { background:var(--pick-soft); color:var(--pick); } .tag.warn { background:var(--warn-soft); color:var(--warn); }
+  .tag.pick { background:var(--pick-soft); color:var(--pick); } .tag.warn { background:var(--warn-soft); color:var(--warn); } .tag.bath { background:var(--line); color:var(--muted); }
   .area { color:var(--muted); font-size:.85rem; margin:2px 0 8px; }
   .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:8px 0; }
   .stat { background:var(--bg); border-radius:8px; padding:6px 8px; }
   .stat b { display:block; font-size:1.05rem; } .stat small { color:var(--muted); font-size:.72rem; line-height:1.2; display:block; }
-  .strips { font-size:.83rem; color:var(--muted); margin:6px 0; }
-  .strips b { color:var(--ink); font-weight:600; }
+  .line { font-size:.83rem; color:var(--muted); margin:5px 0; }
+  .line b { color:var(--ink); font-weight:600; }
   .note { font-size:.88rem; margin:6px 0; }
   .price { display:flex; align-items:center; gap:8px; margin-top:8px; font-size:.88rem; flex-wrap:wrap; }
   .price input { width:82px; padding:5px 7px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink); font-size:.95rem; }
@@ -55,30 +57,33 @@
   .leaflet-popup-content { font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
   .leaflet-popup-content b { font-size:14px; }
   footer { color:var(--muted); font-size:.8rem; padding:24px 0 40px; }
-  @media (max-width:600px) { #map { height:44vh; } .stats { grid-template-columns:repeat(3,1fr); } header h1 { font-size:1.3rem; } }
+  @media (max-width:600px) { #map { height:44vh; } header h1 { font-size:1.3rem; } }
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
   <h1>Portland hotel picker</h1>
-  <p style="background:var(--accent-soft);border-left:4px solid var(--accent);padding:8px 12px;border-radius:6px"><strong>Status:</strong> Mark Spencer (#8) booked Sat + Sun. <strong>Mon Sep 28 night still open</strong> — extending is $280, so compare a one-night stay here. Hotel Vance added as #10.</p>
-  <p>Sat Sep 26 – Tue Sep 29 · 3 nights · 2 people. Tap a hotel to see it on the map. Type in the price you actually get quoted and the link updates so you can send it to each other.</p>
+  <p class="banner"><strong>Status:</strong> Mark Spencer is cancelled. Need <strong>3 nights, Sat Sep 26 – Tue Sep 29</strong>, 2 people. Hotel Vance quoted at $100/night is the number to beat.</p>
+  <p>Sorted by how many restaurants are close. Tap a hotel to see it on the map. Type in real quotes as you get them — they go into the URL so you can send the link to each other.</p>
 </header>
 
 <div id="map"></div>
 <div class="legend">
   <span class="h">Hotel (numbered)</span>
-  <span class="b">Bar / restaurant strip (~5-min walk radius)</span>
-  <span class="v">All-vegan restaurant</span>
-  <span class="k">Helium Comedy Club (Mon)</span>
+  <span class="s">Restaurant strip (~5-min radius)</span>
+  <span class="v">100% vegan restaurant</span>
+  <span class="f">Vegan-friendly (options on menu)</span>
+  <span class="k">Helium (Mon)</span>
 </div>
 
 <div class="toolbar">
-  Sort by:
-  <button data-sort="walk" class="on">Walkability</button>
+  Sort:
+  <button data-sort="food" class="on">Restaurants nearby</button>
   <button data-sort="price">Price</button>
   <button data-sort="helium">Distance to Helium</button>
+  <span class="sep"></span>
+  <label class="tog" id="bathTog"><input type="checkbox" id="hideShared">Hide shared-bath hotels</label>
   <span class="sp"></span>
   <span class="share" id="share"></span>
 </div>
@@ -86,7 +91,7 @@
 <div class="grid" id="cards"></div>
 
 <footer>
-  Walk times are estimates: straight-line distance × 1.3 street factor at a 3 mph pace. "Strips within 15 min" counts the purple circles reachable in a 15-minute walk. Est. prices are Sep 2026 web research averages across the three nights (Sat is higher) — use the "Check rate" links for real quotes. Nothing here is saved anywhere except this browser and the URL. Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
+  Walk times are estimates: straight-line × 1.3 street factor at 3 mph. "Restaurants nearby" ranks by strips within 15 min plus vegan and vegan-friendly spots within 10 min, then by nearest strip. Est. prices are Sep 2026 web research (Sat runs higher); use "Check rate" for real quotes. Nothing is saved anywhere except this browser and the URL. Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
 </footer>
 </div>
 
@@ -95,52 +100,78 @@
 const CHECK = q => `https://www.booking.com/searchresults.html?ss=${q}&checkin=2026-09-26&checkout=2026-09-29&group_adults=2`;
 const MAPS  = q => `https://www.google.com/maps/search/?api=1&query=${q}`;
 
+// sharedBath: true = all rooms shared, 'some' = cheapest rooms shared but private available, false = private
 const hotels = [
-  { id:'grand_stark', name:'Hotel Grand Stark', area:'Central Eastside', addr:'509 SE Stark St', ll:[45.51944,-122.6605], est:160, tag:'pick', tagText:'Top pick',
-    note:'Boutique in a restored 1908 building. Lobby bar, restaurant, mid-century rooms. Dead center of the Central Eastside bars.', q:'Hotel+Grand+Stark+Portland' },
-  { id:'jupiter_next', name:'Jupiter NEXT', area:'E Burnside', addr:'910 E Burnside St', ll:[45.52283,-122.65641], est:170, tag:'pick', tagText:'Pick',
-    note:'Newer, quieter sibling of the Jupiter. Hey Love bar downstairs is a destination itself. Clean, modern.', q:'Jupiter+NEXT+Portland' },
-  { id:'kex', name:'KEX Portland', area:'E Burnside / MLK', addr:'100 NE MLK Jr Blvd', ll:[45.52381,-122.66141], est:165,
-    note:'Icelandic hostel-hotel: private rooms with bath, sauna, good restaurant + bar, social lobby.', q:'KEX+Portland' },
-  { id:'lolo_pass', name:'Lolo Pass', area:'E Burnside (east end)', addr:'1616 E Burnside St', ll:[45.52271,-122.64925], est:155,
-    note:'Hostel-hotel with private rooms, rooftop deck, coffee + cocktail bars. Between the Central Eastside and the 28th Ave strip.', q:'Lolo+Pass+Portland' },
-  { id:'jupiter', name:'Jupiter Hotel (original)', area:'E Burnside', addr:'800 E Burnside St', ll:[45.5226,-122.65733], est:130, tag:'warn', tagText:'Noisy',
-    note:'Converted motel, party vibe, thin walls. Burnside-facing rooms get club noise. Ask for courtyard side.', q:'Jupiter+Hotel+Portland' },
-  { id:'society', name:'The Society Hotel', area:'Old Town', addr:'203 NW 3rd Ave', ll:[45.52469,-122.67371], est:105, tag:'pick', tagText:'Budget pick',
-    note:'1881 boarding house turned polished budget hotel. Private rooms w/ shared bath ~$75–130, suites more. Rooftop deck. Old Town is rough after dark.', q:'The+Society+Hotel+Portland' },
-  { id:'crystal', name:'McMenamins Crystal Hotel', area:'Downtown / West End', addr:'303 SW 12th Ave', ll:[45.52275,-122.68337], est:130,
-    note:'Rooms above the Crystal Ballroom, soaking pool, bar + cafe downstairs. Shared baths (clean, key-locked). ~$105 weeknights, ~$175 Sat.', q:'McMenamins+Crystal+Hotel+Portland' },
-  { id:'mark_spencer', name:'Mark Spencer Hotel', area:'Downtown / Pearl edge', addr:'409 SW 11th Ave', ll:[45.52218,-122.68259], est:150,
-    note:'Reliable, a bit dated, kitchenettes, free breakfast. Powell\'s and the Pearl two blocks away. The safe choice.', q:'Mark+Spencer+Hotel+Portland' },
-  { id:'vance', name:'Hotel Vance (Tribute Portfolio)', area:'South downtown / PSU', addr:'1455 SW Broadway', ll:[45.5145,-122.68263], est:130, tag:'warn', tagText:'Quiet end',
-    note:'Clean, modern, well reviewed, bar + restaurant downstairs with vegan options. By PSU and the art museum, not a bar district — everything is a 15–20 min walk.', q:'Hotel+Vance+Portland' },
-  { id:'hoxton', name:'The Hoxton', area:'Old Town', addr:'15 NW 4th Ave', ll:[45.52335,-122.67461], est:215, tag:'warn', tagText:'Upper-mid',
-    note:'Stylish, great lobby bar and Tope rooftop. Worth it only if Sun/Mon rates dip. Same Old Town caveat.', q:'The+Hoxton+Portland' },
+  { id:'vance', name:'Hotel Vance (Tribute Portfolio)', area:'South downtown / PSU', addr:'1455 SW Broadway', ll:[45.5145,-122.68263], est:100, tag:'pick', tagText:'$100 quoted', sharedBath:false,
+    note:'Clean, modern, well reviewed. Restaurant + bar downstairs with vegan options. Sat morning the PSU Farmers Market is 4 min away (great vegan food carts). Quiet end of downtown, 14–18 min to the main restaurant blocks.', q:'Hotel+Vance+Portland' },
+  { id:'moxy', name:'Moxy Portland Downtown', area:'West End / Pearl edge', addr:'585 SW 10th Ave', ll:[45.52094,-122.68198], est:130, sharedBath:false,
+    note:'Small modern rooms, lively lobby bar, TripAdvisor #12 in Portland. A block from Powell\'s. Dead center of the West End restaurants. Rooms are tight and can be noisy.', q:'Moxy+Portland+Downtown' },
+  { id:'lucia', name:'Hotel Lucia', area:'Downtown core', addr:'400 SW Broadway', ll:[45.52107,-122.67833], est:120, sharedBath:false,
+    note:'Boutique, TripAdvisor #16, averages ~$112. Three restaurants on site. Broadway is the heart of downtown dining.', q:'Hotel+Lucia+Portland' },
+  { id:'rose', name:'Staypineapple Hotel Rose', area:'Waterfront', addr:'50 SW Morrison St', ll:[45.51736,-122.67327], est:115, sharedBath:false,
+    note:'Quirky, well reviewed (8.3 Booking), right on the river. Often ~$100 on Kayak. Luc Lac and Pine Street Market are 3–5 min. Hawthorne Bridge to the east side is next door.', q:'Staypineapple+Hotel+Rose+Portland' },
+  { id:'hilo', name:'Hi-Lo Hotel (Autograph)', area:'Downtown core', addr:'320 SW Harvey Milk St', ll:[45.52013,-122.67492], est:150, sharedBath:false,
+    note:'High ceilings, great beds, Marriott points. Usually pricier than the others here; check.', q:'Hi-Lo+Hotel+Portland' },
+  { id:'zags', name:'Hotel Zags', area:'South downtown / Keller', addr:'515 SW Clay St', ll:[45.51394,-122.6806], est:130, sharedBath:false,
+    note:'Courtyard restaurant, gear shed with free bikes. Two blocks from Vance, same quiet-end tradeoff.', q:'Hotel+Zags+Portland' },
+  { id:'deluxe', name:'Hotel deLuxe', area:'West End / Goose Hollow', addr:'729 SW 15th Ave', ll:[45.52098,-122.68772], est:150, sharedBath:false,
+    note:'Old-Hollywood boutique, Gracie\'s downstairs. West edge of downtown, 5 min to the West End.', q:'Hotel+deLuxe+Portland' },
+  { id:'mark_spencer', name:'Mark Spencer Hotel', area:'Downtown / Pearl edge', addr:'409 SW 11th Ave', ll:[45.52218,-122.68259], est:189, tag:'warn', tagText:'Cancelled — now $189', sharedBath:false,
+    note:'Kitchenettes, free breakfast, Powell\'s two blocks away. Original $150 rate is gone.', q:'Mark+Spencer+Hotel+Portland' },
+  { id:'crystal', name:'McMenamins Crystal Hotel', area:'West End', addr:'303 SW 12th Ave', ll:[45.52275,-122.68337], est:130, sharedBath:true, tag:'bath', tagText:'Shared bath',
+    note:'Rooms above the Crystal Ballroom, soaking pool, Zeus Cafe downstairs. Shared baths are clean and key-locked. ~$105 weeknights, ~$175 Sat.', q:'McMenamins+Crystal+Hotel+Portland' },
+  { id:'society', name:'The Society Hotel', area:'Old Town', addr:'203 NW 3rd Ave', ll:[45.52469,-122.67371], est:105, sharedBath:'some', tag:'bath', tagText:'Shared bath (suites private)',
+    note:'1881 boarding house turned polished budget hotel. Private rooms w/ shared bath ~$75–130, private-bath suites more. Rooftop deck. Old Town is rough after dark.', q:'The+Society+Hotel+Portland' },
+  { id:'hoxton', name:'The Hoxton', area:'Old Town', addr:'15 NW 4th Ave', ll:[45.52335,-122.67461], est:215, tag:'warn', tagText:'Upper-mid', sharedBath:false,
+    note:'Stylish, great lobby restaurant and Tope rooftop. Only if Sun/Mon rates dip.', q:'The+Hoxton+Portland' },
+  { id:'valueinn', name:'Downtown Value Inn', area:'South downtown / PSU', addr:'415 SW Lincoln St', ll:[45.50815,-122.68236], est:80, tag:'warn', tagText:'Motel', sharedBath:false,
+    note:'2-star motel, ~$78. Cheapest in downtown proper. Nothing walkable but PSU; 15 min to Vance\'s area, 20+ to anything good.', q:'Downtown+Value+Inn+Portland' },
+  { id:'grand_stark', name:'Hotel Grand Stark', area:'Central Eastside', addr:'509 SE Stark St', ll:[45.51944,-122.6605], est:160, sharedBath:false,
+    note:'Boutique in a restored 1908 building, lobby bar + restaurant. Obon Shokudo (all-vegan) 3 min. Best food block on the east side.', q:'Hotel+Grand+Stark+Portland' },
+  { id:'jupiter_next', name:'Jupiter NEXT', area:'E Burnside', addr:'910 E Burnside St', ll:[45.52283,-122.65641], est:170, sharedBath:false,
+    note:'Newer, quieter sibling of the Jupiter. Hey Love restaurant/bar downstairs. Sizzle Pie (vegan slices) across the street.', q:'Jupiter+NEXT+Portland' },
+  { id:'jupiter', name:'Jupiter Hotel (original)', area:'E Burnside', addr:'800 E Burnside St', ll:[45.5226,-122.65733], est:130, tag:'warn', tagText:'Noisy', sharedBath:false,
+    note:'Converted motel, party vibe, thin walls. Ask for courtyard side. Closest cheap option to Helium.', q:'Jupiter+Hotel+Portland' },
+  { id:'kex', name:'KEX Portland', area:'E Burnside / MLK', addr:'100 NE MLK Jr Blvd', ll:[45.52381,-122.66141], est:165, sharedBath:false,
+    note:'Icelandic hostel-hotel: private rooms with bath, sauna, good restaurant.', q:'KEX+Portland' },
+  { id:'lolo_pass', name:'Lolo Pass', area:'E Burnside (east end)', addr:'1616 E Burnside St', ll:[45.52271,-122.64925], est:155, sharedBath:false,
+    note:'Hostel-hotel, private rooms with bath, rooftop, cafe. Between the Central Eastside and 28th Ave restaurants.', q:'Lolo+Pass+Portland' },
+  { id:'eastlund', name:'Hotel Eastlund', area:'Lloyd District', addr:'1021 NE Grand Ave', ll:[45.53034,-122.66093], est:130, sharedBath:false,
+    note:'Modern, rooftop restaurant, often cheap. Lloyd is a dead zone at night; MAX stop out front gets you downtown in 10 min.', q:'Hotel+Eastlund+Portland' },
+  { id:'hie_cc', name:'Holiday Inn Express Convention Center', area:'Lloyd District', addr:'1441 NE 2nd Ave', ll:[45.53361,-122.66443], est:120, sharedBath:false,
+    note:'Chain, free breakfast, reliably cheap. Same Lloyd caveat — you\'ll MAX or walk 15 min for dinner.', q:'Holiday+Inn+Express+Portland+Convention+Center' },
 ];
 
 const strips = [
-  { name:'Central Eastside', ll:[45.51779,-122.65949], blurb:'Loyal Legion, Produce Row, Bit House, Obon, Lilla, distilleries' },
-  { name:'E Burnside / 28th', ll:[45.52324,-122.63751], blurb:'Laurelhurst Theater, Epif, Boxcar, Screen Door, bars on 28th' },
-  { name:'Hawthorne', ll:[45.51179,-122.62542], blurb:'Bagdad Theater, Next Level, Sapphire, Space Room' },
-  { name:'Belmont', ll:[45.51656,-122.62848], blurb:'Avalon, Norah, Mirisata (west end), Horse Brass' },
-  { name:'Division', ll:[45.50465,-122.63217], blurb:'Restaurant row, Salt & Straw, Lauretta Jean\'s' },
-  { name:'Mississippi', ll:[45.55434,-122.67583], blurb:'Prost!, Mississippi Studios, StormBreaker' },
-  { name:'Alberta', ll:[45.55899,-122.64453], blurb:'Alberta Rose, Chubby Bunny, Mis Tacones nearby' },
-  { name:'Pearl District', ll:[45.52468,-122.68188], blurb:'Deschutes, Teardrop, Powell\'s, galleries' },
-  { name:'Downtown / West End', ll:[45.522,-122.68144], blurb:'Crystal Ballroom, Multnomah Whiskey Library, Rabbits' },
-  { name:'Old Town', ll:[45.52266,-122.67312], blurb:'Voodoo, live music, dive bars — rough late' },
-  { name:'NW 23rd', ll:[45.52613,-122.69411], blurb:'Nob Hill shops and restaurants' },
+  { name:'West End', ll:[45.522,-122.68144], blurb:'Sizzle Pie, Bamboo Sushi, Crystal Ballroom, dense restaurants on SW 10th–13th' },
+  { name:'Downtown core / Broadway', ll:[45.51905,-122.678], blurb:'Departure, Veggie Grill, Luc Lac, Pioneer Square food carts' },
+  { name:'Pearl District', ll:[45.52468,-122.68188], blurb:'Deschutes, Andina, Powell\'s, lots of restaurants' },
+  { name:'Old Town', ll:[45.52266,-122.67312], blurb:'Pine Street Market, Voodoo, Lan Su area — rough late' },
+  { name:'Central Eastside', ll:[45.51779,-122.65949], blurb:'Obon Shokudo, Lilla, Loyal Legion, distilleries' },
+  { name:'E Burnside / 28th', ll:[45.52324,-122.63751], blurb:'Epif, Boxcar, Screen Door, 28th Ave restaurants' },
+  { name:'Hawthorne', ll:[45.51179,-122.62542], blurb:'Next Level Veggie Grill, Bagdad, Harlow (vegetarian)' },
+  { name:'Belmont', ll:[45.51656,-122.62848], blurb:'Norah, Mirisata (west end), Horse Brass' },
+  { name:'Division', ll:[45.50465,-122.63217], blurb:'Restaurant row' },
+  { name:'Mississippi', ll:[45.55434,-122.67583], blurb:'¿Por Qué No?, Prost!, StormBreaker' },
+  { name:'Alberta', ll:[45.55899,-122.64453], blurb:'Chubby Bunny, Mis Tacones nearby' },
+  { name:'NW 23rd', ll:[45.52613,-122.69411], blurb:'Nob Hill restaurants' },
 ];
 
 const vegan = [
   ['Obon Shokudo',[45.51755,-122.66051]], ['Lilla',[45.51275,-122.656]], ['Mirisata',[45.5162,-122.64102]],
   ['Boxcar Pizza',[45.5289,-122.63823]], ['Epif',[45.52587,-122.63697]], ['Norah',[45.51657,-122.62427]],
-  ['Next Level Veggie Grill',[45.51236,-122.61968]], ['Baby Ketten Klub',[45.49851,-122.64091]], ['Rabbits Café',[45.52208,-122.67637]],
+  ['Next Level Veggie Grill',[45.51236,-122.61968]], ['Baby Ketten Klub',[45.49851,-122.64091]], ['Rabbits Café (verify open)',[45.52208,-122.67637]],
+  ['Veggie Grill SW Taylor (verify open)',[45.51738,-122.67861]], ['Blossoming Lotus Cafe (NW)',[45.53326,-122.69565]],
   ['Mis Tacones',[45.5626,-122.64791]], ['Chubby Bunny',[45.55923,-122.65494]], ['Dirty Lettuce',[45.5485,-122.61441]],
+];
+const veganFriendly = [
+  ['Luc Lac Vietnamese',[45.51687,-122.67538],'tofu pho, vermicelli bowls'], ['Sizzle Pie W Burnside',[45.52286,-122.68086],'vegan pizza by the slice'],
+  ['Bamboo Sushi',[45.52239,-122.68293],'vegan rolls'], ['Departure (rooftop)',[45.51905,-122.678],'dedicated vegan menu'],
+  ['Shigezo',[45.51773,-122.68255],'vegan ramen'], ['Pine Street Market',[45.52145,-122.67236],'food hall, several vegan options'],
+  ['PSU Farmers Market (Sat am)',[45.51154,-122.68624],'food carts, produce'], ['Sizzle Pie E Burnside',[45.5227,-122.65907],'vegan pizza by the slice'],
 ];
 const helium = { name:'Helium Comedy Club', ll:[45.51193,-122.65643] };
 
-// --- walk math ---
 function meters(a,b){ const R=6371000,toR=x=>x*Math.PI/180; const dLat=toR(b[0]-a[0]),dLon=toR(b[1]-a[1]);
   const s=Math.sin(dLat/2)**2+Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(s)); }
 const walkMin = (a,b) => Math.round(meters(a,b)*1.3/80);
@@ -151,10 +182,11 @@ hotels.forEach(h => {
   h.within15 = h.strips.filter(s=>s.min<=15);
   h.helium = walkMin(h.ll, helium.ll);
   h.vegan10 = vegan.filter(v => walkMin(h.ll,v[1])<=10).map(v=>v[0]);
-  h.walkScore = h.within15.length*10 - h.nearest.min; // more strips, closer nearest = better
+  h.vf10 = veganFriendly.filter(v => walkMin(h.ll,v[1])<=10).map(v=>v[0]);
+  h.foodCount = h.vegan10.length + h.vf10.length;
+  h.foodScore = h.within15.length*10 + h.foodCount*3 - h.nearest.min;
 });
 
-// --- quotes in URL hash + localStorage ---
 function readQuotes(){
   const q={};
   try { Object.assign(q, JSON.parse(localStorage.getItem('pdx-hotel-quotes')||'{}')); } catch(e){}
@@ -171,15 +203,11 @@ function saveQuotes(){
 }
 const priceOf = h => quotes[h.id] > 0 ? quotes[h.id] : h.est;
 
-// --- map ---
-const map = L.map('map', { scrollWheelZoom:false }).setView([45.5215,-122.662], 13);
+const map = L.map('map', { scrollWheelZoom:false }).setView([45.5205,-122.672], 14);
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'© OpenStreetMap contributors' }).addTo(map);
-
-strips.forEach(s => {
-  L.circle(s.ll, { radius:350, color:'#7c3aed', weight:1, fillColor:'#7c3aed', fillOpacity:.15 }).addTo(map)
-   .bindPopup(`<b>${s.name}</b><br>${s.blurb}`);
-});
+strips.forEach(s => L.circle(s.ll,{ radius:350, color:'#7c3aed', weight:1, fillColor:'#7c3aed', fillOpacity:.13 }).addTo(map).bindPopup(`<b>${s.name}</b><br>${s.blurb}`));
 vegan.forEach(([n,ll]) => L.circleMarker(ll,{ radius:5, color:'#15803d', fillColor:'#15803d', fillOpacity:.9, weight:1 }).addTo(map).bindPopup(`<b>${n}</b><br>100% vegan`));
+veganFriendly.forEach(([n,ll,d]) => L.circleMarker(ll,{ radius:5, color:'#0e7490', fillColor:'#0e7490', fillOpacity:.9, weight:1 }).addTo(map).bindPopup(`<b>${n}</b><br>Vegan-friendly: ${d}`));
 L.circleMarker(helium.ll,{ radius:8, color:'#fff', fillColor:'#e11d48', fillOpacity:1, weight:2 }).addTo(map).bindPopup('<b>Helium Comedy Club</b><br>Mon Sep 28');
 
 const markers = {};
@@ -187,33 +215,36 @@ hotels.forEach((h,i) => {
   h.n = i+1;
   const icon = L.divIcon({ className:'', html:`<div style="width:26px;height:26px;border-radius:50%;background:#c2410c;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);font:700 12px/22px sans-serif;text-align:center">${h.n}</div>`, iconSize:[26,26], iconAnchor:[13,13] });
   markers[h.id] = L.marker(h.ll,{ icon }).addTo(map)
-    .bindPopup(() => `<b>${h.n}. ${h.name}</b><br>${h.area} · ~$${priceOf(h)}/night<br>Nearest strip: ${h.nearest.name} (${h.nearest.min} min)<br>Helium: ${h.helium} min walk`)
+    .bindPopup(() => `<b>${h.n}. ${h.name}</b><br>${h.area} · ~$${priceOf(h)}/night<br>${h.foodCount} vegan-ok spots within 10 min<br>Nearest strip: ${h.nearest.name} (${h.nearest.min} min)`)
     .on('click', () => highlight(h.id));
 });
+function highlight(id){ document.querySelectorAll('.card').forEach(c => c.classList.toggle('active', c.dataset.id===id)); }
 
-function highlight(id){
-  document.querySelectorAll('.card').forEach(c => c.classList.toggle('active', c.dataset.id===id));
-}
-
-// --- cards ---
-let sortKey = 'walk';
+let sortKey = 'food';
+let hideShared = false;
+try { hideShared = localStorage.getItem('pdx-hide-shared')==='1'; } catch(e){}
 function render(){
-  const list = [...hotels].sort((a,b) => {
+  document.getElementById('hideShared').checked = hideShared;
+  document.getElementById('bathTog').classList.toggle('on', hideShared);
+  const list = hotels.filter(h => !(hideShared && h.sharedBath)).sort((a,b) => {
     if(sortKey==='price') return priceOf(a)-priceOf(b);
-    if(sortKey==='walk') return b.walkScore-a.walkScore;
+    if(sortKey==='food') return b.foodScore-a.foodScore;
     return a.helium-b.helium;
   });
+  hotels.forEach(h => { const hidden = hideShared && h.sharedBath; if(hidden) map.removeLayer(markers[h.id]); else if(!map.hasLayer(markers[h.id])) markers[h.id].addTo(map); });
   document.getElementById('cards').innerHTML = list.map(h => `
     <div class="card" data-id="${h.id}">
       <h3><span class="num">${h.n}</span>${h.name}${h.tag?` <span class="tag ${h.tag}">${h.tagText}</span>`:''}</h3>
       <div class="area">${h.area} · ${h.addr}</div>
       <div class="stats">
         <div class="stat"><b>$${priceOf(h)}</b><small>${quotes[h.id]>0?'your quote':'est.'} / night</small></div>
+        <div class="stat"><b>${h.foodCount}</b><small>vegan-ok spots within 10 min</small></div>
         <div class="stat"><b>${h.nearest.min} min</b><small>to ${h.nearest.name}</small></div>
-        <div class="stat"><b>${h.helium} min</b><small>to Helium</small></div>
       </div>
-      <div class="strips"><b>${h.within15.length} strip${h.within15.length===1?'':'s'} within 15 min:</b> ${h.within15.map(s=>`${s.name} (${s.min})`).join(', ')||'none'}</div>
-      ${h.vegan10.length?`<div class="strips"><b>Vegan within 10 min:</b> ${h.vegan10.join(', ')}</div>`:''}
+      <div class="line"><b>Strips within 15 min:</b> ${h.within15.map(s=>`${s.name} (${s.min})`).join(', ')||'none'}</div>
+      ${h.vegan10.length?`<div class="line"><b>100% vegan within 10:</b> ${h.vegan10.join(', ')}</div>`:''}
+      ${h.vf10.length?`<div class="line"><b>Vegan-friendly within 10:</b> ${h.vf10.join(', ')}</div>`:''}
+      <div class="line"><b>Helium:</b> ${h.helium} min walk</div>
       <div class="note">${h.note}</div>
       <div class="price">
         <label>Quoted $/night <input type="number" inputmode="numeric" min="0" step="1" data-id="${h.id}" value="${quotes[h.id]>0?quotes[h.id]:''}" placeholder="${h.est}"></label>
@@ -223,7 +254,7 @@ function render(){
     </div>`).join('');
 
   document.querySelectorAll('.card').forEach(c => c.addEventListener('click', e => {
-    if(e.target.closest('input,a')) return;
+    if(e.target.closest('input,a,label')) return;
     const h = hotels.find(x=>x.id===c.dataset.id);
     map.flyTo(h.ll, 15, { duration:.6 }); markers[h.id].openPopup(); highlight(h.id);
     if(window.innerWidth<700) document.getElementById('map').scrollIntoView({ behavior:'smooth' });
@@ -236,6 +267,8 @@ function render(){
 document.querySelectorAll('.toolbar button').forEach(b => b.addEventListener('click', () => {
   sortKey=b.dataset.sort; document.querySelectorAll('.toolbar button').forEach(x=>x.classList.toggle('on',x===b)); render();
 }));
+document.getElementById('hideShared').addEventListener('change', e => { hideShared=e.target.checked; try{ localStorage.setItem('pdx-hide-shared', hideShared?'1':'0'); }catch(x){} render(); });
+if(!(quotes.vance>0)) quotes.vance = 100;
 saveQuotes(); render();
 </script>
 </body>
