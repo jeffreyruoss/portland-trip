@@ -62,7 +62,7 @@
 <div class="wrap">
 <header>
   <h1>Portland hotel picker</h1>
-  <p style="background:var(--accent-soft);border-left:4px solid var(--accent);padding:8px 12px;border-radius:6px"><strong>Decided:</strong> Mark Spencer Hotel (#8), booked Sep 26–28. Page kept for reference.</p>
+  <p style="background:var(--accent-soft);border-left:4px solid var(--accent);padding:8px 12px;border-radius:6px"><strong>Status:</strong> Mark Spencer (#8) booked Sat + Sun. <strong>Mon Sep 28 night still open</strong> — extending is $280, so compare a one-night stay here. Hotel Vance added as #10.</p>
   <p>Sat Sep 26 – Tue Sep 29 · 3 nights · 2 people. Tap a hotel to see it on the map. Type in the price you actually get quoted and the link updates so you can send it to each other.</p>
 </header>
 
@@ -112,6 +112,8 @@ const hotels = [
     note:'Rooms above the Crystal Ballroom, soaking pool, bar + cafe downstairs. Shared baths (clean, key-locked). ~$105 weeknights, ~$175 Sat.', q:'McMenamins+Crystal+Hotel+Portland' },
   { id:'mark_spencer', name:'Mark Spencer Hotel', area:'Downtown / Pearl edge', addr:'409 SW 11th Ave', ll:[45.52218,-122.68259], est:150,
     note:'Reliable, a bit dated, kitchenettes, free breakfast. Powell\'s and the Pearl two blocks away. The safe choice.', q:'Mark+Spencer+Hotel+Portland' },
+  { id:'vance', name:'Hotel Vance (Tribute Portfolio)', area:'South downtown / PSU', addr:'1455 SW Broadway', ll:[45.5145,-122.68263], est:130, tag:'warn', tagText:'Quiet end',
+    note:'Clean, modern, well reviewed, bar + restaurant downstairs with vegan options. By PSU and the art museum, not a bar district — everything is a 15–20 min walk.', q:'Hotel+Vance+Portland' },
   { id:'hoxton', name:'The Hoxton', area:'Old Town', addr:'15 NW 4th Ave', ll:[45.52335,-122.67461], est:215, tag:'warn', tagText:'Upper-mid',
     note:'Stylish, great lobby bar and Tope rooftop. Worth it only if Sun/Mon rates dip. Same Old Town caveat.', q:'The+Hoxton+Portland' },
 ];
