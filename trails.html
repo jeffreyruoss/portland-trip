@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trail Run Picker · Portland ↔ Seattle</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root {
+    --bg:#f7f6f2; --card:#fff; --ink:#1f2320; --muted:#5f665f; --line:#e2e0d8;
+    --accent:#2f6f4e; --accent-soft:#e4f0e9; --warn:#9a5b12; --warn-soft:#fbeedd; --bad:#b42318; --bad-soft:#fde8e6;
+    --s3:#d97706; --s2:#2563eb; --s1:#6b7280; --origin:#e11d48;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#15181a; --card:#1e2225; --ink:#e8e8e3; --muted:#a2a8a2; --line:#2e3438;
+      --accent:#7fc8a0; --accent-soft:#223a2e; --warn:#f0b96b; --warn-soft:#3d2f18; --bad:#f28b82; --bad-soft:#3d1f1c; }
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+  a { color:var(--accent); }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 16px; }
+  header { padding:20px 0 10px; }
+  header h1 { margin:0; font-size:1.5rem; }
+  header p { margin:6px 0 0; color:var(--muted); font-size:.95rem; }
+  header nav a { font-size:.9rem; }
+  #map { height:52vh; min-height:320px; border:1px solid var(--line); border-radius:12px; margin:12px 0 8px; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px 16px; font-size:.82rem; color:var(--muted); margin-bottom:12px; }
+  .legend span::before { content:""; display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
+  .legend .s3::before { background:var(--s3); } .legend .s2::before { background:var(--s2); } .legend .s1::before { background:var(--s1); } .legend .o::before { background:var(--origin); }
+  .controls { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:6px 0 14px; display:grid; gap:10px; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); font-size:.9rem; }
+  .controls label { display:flex; flex-direction:column; gap:4px; }
+  .controls label > span { color:var(--muted); font-size:.8rem; text-transform:uppercase; letter-spacing:.04em; }
+  .controls select, .controls input[type=range] { width:100%; }
+  .controls select { padding:6px 8px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink); font-size:.95rem; }
+  .seg { display:flex; gap:4px; }
+  .seg button { flex:1; border:1px solid var(--line); background:var(--bg); color:var(--ink); padding:6px 4px; border-radius:6px; cursor:pointer; font-size:.85rem; }
+  .seg button.on { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .chk { flex-direction:row !important; align-items:center; gap:8px !important; }
+  .count { color:var(--muted); font-size:.85rem; margin:0 0 10px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; cursor:pointer; transition:border-color .15s; }
+  .card:hover, .card.active { border-color:var(--s3); }
+  .card h3 { margin:0; font-size:1.05rem; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .stars { color:var(--s3); font-size:.9rem; letter-spacing:1px; }
+  .area { color:var(--muted); font-size:.85rem; margin:2px 0 8px; }
+  .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:8px 0; }
+  .stat { background:var(--bg); border-radius:8px; padding:6px 8px; }
+  .stat b { display:block; font-size:1rem; } .stat small { color:var(--muted); font-size:.7rem; line-height:1.2; display:block; }
+  .fit { font-size:.85rem; padding:6px 10px; border-radius:6px; margin:6px 0; }
+  .fit.ok { background:var(--accent-soft); color:var(--accent); } .fit.tight { background:var(--warn-soft); color:var(--warn); } .fit.no { background:var(--bad-soft); color:var(--bad); }
+  .note { font-size:.88rem; margin:6px 0; }
+  .meta { font-size:.82rem; color:var(--muted); }
+  .links { margin-top:8px; font-size:.88rem; display:flex; gap:12px; flex-wrap:wrap; }
+  .leaflet-popup-content { font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+  footer { color:var(--muted); font-size:.8rem; padding:24px 0 40px; }
+  @media (max-width:600px) { #map { height:44vh; } header h1 { font-size:1.3rem; } .stats { grid-template-columns:repeat(2,1fr); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Trail run picker</h1>
+  <p>Two run days: <strong>Tue Sep 29 afternoon</strong> (car at PDX ~1:30pm, sunset 6:55, sleep in Centralia) and <strong>Wed Sep 30</strong> (start from Centralia, end in Portland). Pick a day, set how far you'll drive, and the cards tell you whether it fits and when you'd arrive.</p>
+  <nav><a href="index.html">← Trip plan</a></nav>
+</header>
+
+<div id="map"></div>
+<div class="legend">
+  <span class="s3">★★★ Must-see</span><span class="s2">★★ Great</span><span class="s1">★ Solid</span><span class="o">Start / end points</span>
+</div>
+
+<div class="controls">
+  <label><span>Day</span>
+    <div class="seg" id="daySeg">
+      <button data-day="tue" class="on">Tue · from PDX 1:30pm</button>
+      <button data-day="wed">Wed · from Centralia 8am</button>
+    </div>
+  </label>
+  <label><span>Max drive from start: <b id="maxLbl">3 h</b></span>
+    <input type="range" id="maxDrive" min="30" max="240" step="15" value="180">
+  </label>
+  <label><span>Minimum rating</span>
+    <div class="seg" id="starSeg">
+      <button data-min="1" class="on">★ any</button><button data-min="2">★★+</button><button data-min="3">★★★ only</button>
+    </div>
+  </label>
+  <label class="chk"><input type="checkbox" id="fitOnly"> Only show runs that fit the day</label>
+</div>
+<p class="count" id="count"></p>
+<div class="grid" id="cards"></div>
+
+<footer>
+  Drive times are estimates for a weekday with no traffic; add 20–30 min for Tacoma/JBLM on I-5 in the afternoon. "Fits" assumes 20 min at the trailhead to park and change, a comfortable trail-run pace, and Tuesday done running 10 min before sunset; Wednesday back in Portland by 8pm. Passes: NW Forest Pass / $5 day fee at most Oregon Forest Service trailheads; Discover Pass ($10/day) at WA state trailheads; $30 per car at Mount Rainier. Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
+</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+// drive minutes: pdx = from PDX; cent = from Centralia; toPdx = trail → downtown Portland; toCent = trail → Centralia
+const trails = [
+  // --- Columbia River Gorge ---
+  { id:'wahkeena', name:'Wahkeena – Multnomah Falls Loop', region:'Columbia Gorge, OR', ll:[45.5747,-122.1276], mi:5, gain:1600, hrs:1.5, stars:3, pdx:30, cent:130, toPdx:35, toCent:130, pass:'Free. Timed permits ended Sep 7.',
+    note:'The classic: five waterfalls, mossy switchbacks, Multnomah at the end. Start at the Wahkeena lot so the crowds are at the finish. Add Devil\'s Rest for 8 mi / 2,400 ft.' },
+  { id:'eagle', name:'Eagle Creek to Tunnel Falls', region:'Columbia Gorge, OR', ll:[45.6365,-121.9195], mi:12, gain:1600, hrs:3, stars:3, pdx:40, cent:140, toPdx:45, toCent:140, pass:'NW Forest Pass or $5 at the lot.',
+    note:'Cliff-edge trail blasted into basalt with cables, ending behind a waterfall. Punchbowl Falls at 2 mi is the short version (4 mi RT, 1 h). Gentle grade, very runnable.' },
+  { id:'angels', name:'Angel\'s Rest', region:'Columbia Gorge, OR', ll:[45.5603,-122.1725], mi:4.8, gain:1500, hrs:1.25, stars:1, pdx:25, cent:125, toPdx:30, toCent:125, pass:'Free.',
+    note:'Closest Gorge trailhead. Steady climb to a rocky viewpoint over the river. Quieter than Multnomah.' },
+  { id:'dog', name:'Dog Mountain', region:'Columbia Gorge, WA', ll:[45.6992,-121.7088], mi:7, gain:2800, hrs:2, stars:2, pdx:55, cent:150, toPdx:60, toCent:150, pass:'NW Forest Pass. Bridge of the Gods toll $3.',
+    note:'Big vert, huge open views up and down the Gorge. Permits only needed on spring weekends. Loop it: up Augspurger, down Dog.' },
+  { id:'hamilton', name:'Hamilton Mountain Loop', region:'Beacon Rock SP, WA', ll:[45.6318,-122.0213], mi:7.5, gain:2000, hrs:2, stars:2, pdx:45, cent:130, toPdx:45, toCent:130, pass:'Discover Pass.',
+    note:'Pool of the Winds waterfall, then a ridge with Gorge views both ways. Tack on Beacon Rock (1 mi, switchback staircase) if you have 30 min.' },
+  { id:'capehorn', name:'Cape Horn Loop', region:'Columbia Gorge, WA', ll:[45.5893,-122.1785], mi:7, gain:1300, hrs:1.75, stars:1, pdx:35, cent:120, toPdx:35, toCent:120, pass:'Free.',
+    note:'Rolling loop with cliff-top viewpoints. Lower half closed Feb–Jul for falcons; open in Sep. Fall is its best season.' },
+  { id:'macleay', name:'Forest Park – Wildwood from Macleay', region:'Portland, OR', ll:[45.536,-122.7127], mi:8, gain:1000, hrs:1.5, stars:1, pdx:25, cent:105, toPdx:10, toCent:105, pass:'Free.',
+    note:'In-city. Macleay → Pittock Mansion → Wildwood as far as you like (30 mi of trail). Good for a Thu-morning run before the flight, no car needed.' },
+  // --- Mt Hood ---
+  { id:'timberline', name:'Timberline → Zigzag Canyon (PCT)', region:'Mt Hood, OR', ll:[45.3311,-121.7118], mi:5, gain:1000, hrs:1.5, stars:3, pdx:80, cent:180, toPdx:85, toCent:180, pass:'Free (Timberline lot).',
+    note:'Start at Timberline Lodge (6,000 ft), run the Pacific Crest Trail west with Mt Hood filling the sky, to the Zigzag Canyon overlook. Extend to Paradise Park for 12 mi / 2,300 ft — one of the best alpine runs in Oregon.' },
+  { id:'ramona', name:'Ramona Falls', region:'Mt Hood, OR', ll:[45.3868,-121.832], mi:7, gain:1000, hrs:1.75, stars:2, pdx:75, cent:170, toPdx:75, toCent:170, pass:'NW Forest Pass.',
+    note:'Rolling loop to a 120-ft fan waterfall over columnar basalt. Sandy River crossing is on logs (bridge removed) — fine in late Sep low water.' },
+  { id:'tdh', name:'Mirror Lake → Tom Dick & Harry', region:'Mt Hood, OR', ll:[45.3026,-121.7773], mi:8, gain:1700, hrs:2, stars:2, pdx:65, cent:160, toPdx:65, toCent:160, pass:'NW Forest Pass.',
+    note:'Lake at 2 mi, then a ridge summit with Hood straight across. Closest Hood trailhead to Portland, right off Hwy 26.' },
+  // --- Silver Falls ---
+  { id:'silver', name:'Trail of Ten Falls', region:'Silver Falls SP, OR', ll:[44.8783,-122.6555], mi:7.2, gain:800, hrs:1.75, stars:3, pdx:75, cent:170, toPdx:65, toCent:170, pass:'$5 day-use.',
+    note:'Ten waterfalls in one loop, walk behind four of them. Oregon\'s best waterfall run, and runnable the whole way. It\'s south of Portland — the wrong direction for Centralia, but worth it.' },
+  // --- Mt St Helens ---
+  { id:'ape', name:'Ape Canyon → Plains of Abraham', region:'Mt St Helens, WA', ll:[46.1653,-122.0923], mi:11, gain:1800, hrs:3, stars:3, pdx:105, cent:100, toPdx:95, toCent:100, pass:'NW Forest Pass.',
+    note:'Old-growth ridge climb, then you pop out onto the 1980 blast plain with the crater right there. Loowit Trail across the pumice plains is otherworldly. South side — road is open. Short option: Lava Canyon, 1.5 mi, cable ladders and a suspension bridge, same trailhead area.' },
+  { id:'coldwater', name:'Coldwater Lake / Hummocks', region:'Mt St Helens, WA', ll:[46.3041,-122.2375], mi:6, gain:400, hrs:1.5, stars:2, pdx:110, cent:75, toPdx:110, toCent:75, pass:'Free.',
+    note:'Blast-zone lake with the crater at the end. Hummocks loop (2.5 mi) crosses the debris avalanche. Johnston Ridge is still cut off by the 2023 slide — road reopens 2027 — so this is as close as you get on the north side.' },
+  // --- Mt Rainier ---
+  { id:'skyline', name:'Skyline Trail from Paradise', region:'Mt Rainier NP, WA', ll:[46.7865,-121.7353], mi:5.5, gain:1700, hrs:2, stars:3, pdx:165, cent:120, toPdx:165, toCent:120, pass:'$30/car at the gate. No timed entry in 2026.',
+    note:'The single best short run in the Northwest: meadows, glaciers, Rainier filling the sky, late-Sep fall color. Panorama Point at the top. Add Golden Gate or Paradise Glacier for more. Lots fill early in summer; late Sep weekday is fine. Check for early snow.' },
+  { id:'burroughs', name:'Burroughs Mountain from Sunrise', region:'Mt Rainier NP, WA', ll:[46.9146,-121.6431], mi:9, gain:2500, hrs:2.5, stars:3, pdx:200, cent:165, toPdx:200, toCent:165, pass:'$30/car. Sunrise Rd often closes for the season late Sep / early Oct — verify on nps.gov.',
+    note:'Tundra ridge walk straight at the Emmons Glacier, closest you can get to the summit without climbing. Highest road-accessible point in the park. Far from everything.' },
+  // --- Olympics ---
+  { id:'ellinor', name:'Mount Ellinor', region:'Olympic NF, WA', ll:[47.5103,-123.2477], mi:3.2, gain:2400, hrs:2, stars:2, pdx:180, cent:90, toPdx:180, toCent:90, pass:'NW Forest Pass.',
+    note:'Short and savage: 2,400 ft in 1.6 mi from the upper trailhead. Summit looks over Hood Canal to Rainier and Seattle. Mountain goats. Only from Centralia/Olympia — it\'s west over Hood Canal.' },
+  { id:'hurricane', name:'Hurricane Ridge → Klahhane Ridge', region:'Olympic NP, WA', ll:[47.9692,-123.498], mi:7, gain:1900, hrs:2, stars:3, pdx:270, cent:180, toPdx:240, toCent:180, pass:'$30/car.',
+    note:'Olympic Mountains skyline on one side, Strait of Juan de Fuca on the other. Too far for this trip unless you rearrange the whole Wednesday. Listed so you know it exists.' },
+  // --- Issaquah Alps / North Bend ---
+  { id:'poopoo', name:'Tiger Mountain – Poo Poo Point', region:'Issaquah, WA', ll:[47.5006,-122.0313], mi:7, gain:1800, hrs:1.75, stars:1, pdx:165, cent:95, toPdx:170, toCent:95, pass:'Free at Chirico lot.',
+    note:'Steady forested climb to a paraglider launch meadow over Lake Sammamish. The default Seattle-area run; fine, not special.' },
+  { id:'rattlesnake', name:'Rattlesnake Ledge / Ridge', region:'North Bend, WA', ll:[47.4341,-121.7735], mi:4, gain:1160, hrs:1, stars:2, pdx:170, cent:105, toPdx:175, toCent:105, pass:'Free.',
+    note:'Best view-per-mile near Seattle: 2 mi up to a ledge over Rattlesnake Lake. Continue along the ridge (up to 11 mi) for a real run with few people.' },
+  { id:'si', name:'Mount Si', region:'North Bend, WA', ll:[47.488,-121.7226], mi:8, gain:3150, hrs:2.5, stars:2, pdx:170, cent:105, toPdx:175, toCent:105, pass:'Discover Pass.',
+    note:'Seattle\'s training hill. Relentless climb, big summit view of the Snoqualmie valley and Rainier. Busy.' },
+  { id:'mailbox', name:'Mailbox Peak', region:'North Bend, WA', ll:[47.4672,-121.6725], mi:9.4, gain:4000, hrs:3.5, stars:2, pdx:175, cent:110, toPdx:180, toCent:110, pass:'Discover Pass.',
+    note:'4,000 ft to a mailbox on a summit. New trail is runnable; old trail is a leg-destroyer. Only if you want Wednesday to hurt.' },
+  { id:'cougar', name:'Cougar Mountain loops', region:'Issaquah, WA', ll:[47.5335,-122.129], mi:6, gain:900, hrs:1.5, stars:1, pdx:160, cent:90, toPdx:165, toCent:90, pass:'Free.',
+    note:'36 mi of mossy, rolling trail. Zero views, all forest. Best pick if Tuesday\'s run was big and you want easy miles.' },
+  { id:'discovery', name:'Discovery Park loop', region:'Seattle, WA', ll:[47.6618,-122.4219], mi:4.5, gain:400, hrs:1, stars:1, pdx:175, cent:100, toPdx:180, toCent:100, pass:'Free.',
+    note:'Bluffs, beach, lighthouse, Olympics across the Sound. In-city; pair with lunch in Seattle rather than making it the run.' },
+];
+
+const origins = {
+  tue: { name:'PDX (Tue 1:30pm)', ll:[45.5871,-122.5928], key:'pdx', startMin:13*60+30, deadline:18*60+45, after:'toCent', afterName:'Centralia', afterLabel:'ETA Centralia' },
+  wed: { name:'Centralia (Wed 8am)', ll:[46.7204,-122.9614], key:'cent', startMin:8*60, deadline:20*60, after:'toPdx', afterName:'Portland', afterLabel:'ETA Portland' },
+};
+const endPoints = [ ['Portland (downtown)',[45.5202,-122.6742]], ['Seattle',[47.6038,-122.3301]] ];
+const fmt = m => { m=Math.round(m); const h=Math.floor(m/60)%24, mm=m%60; const ap=h>=12?'pm':'am'; return `${((h+11)%12)+1}:${String(mm).padStart(2,'0')}${ap}`; };
+const hrsFmt = m => m>=60 ? `${Math.floor(m/60)}h${m%60?` ${m%60}m`:''}` : `${m} min`;
+
+function evaluate(t, day){
+  const o=origins[day]; const drive=t[o.key]; const runEnd = o.startMin + drive + 20 + t.hrs*60;
+  const arrive = runEnd + t[o.after];
+  let cls, msg;
+  if(day==='tue'){
+    const slack = o.deadline - runEnd;
+    cls = slack>=45?'ok':slack>=0?'tight':'no';
+    msg = cls==='no' ? `Doesn't fit: you'd finish at ${fmt(runEnd)}, after dark.` : `Drive ${hrsFmt(drive)}, run ${fmt(o.startMin+drive+20)}–${fmt(runEnd)} (${hrsFmt(slack)} before sunset) → ${o.afterLabel} ${fmt(arrive)}`;
+  } else {
+    const slack = o.deadline - arrive;
+    cls = slack>=60?'ok':slack>=0?'tight':'no';
+    msg = cls==='no' ? `Doesn't fit: back in Portland ${fmt(arrive)}.` : `Drive ${hrsFmt(drive)}, run ${fmt(o.startMin+drive+20)}–${fmt(runEnd)}, drive ${hrsFmt(t[o.after])} → ${o.afterLabel} ${fmt(arrive)}`;
+  }
+  return { cls, msg, drive };
+}
+
+// --- map ---
+const map = L.map('map', { scrollWheelZoom:false });
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:18, attribution:'© OpenStreetMap contributors' }).addTo(map);
+const color = s => s===3?'#d97706':s===2?'#2563eb':'#6b7280';
+Object.values(origins).forEach(o => L.circleMarker(o.ll,{ radius:7, color:'#fff', weight:2, fillColor:'#e11d48', fillOpacity:1 }).addTo(map).bindPopup(`<b>${o.name}</b>`));
+endPoints.forEach(([n,ll]) => L.circleMarker(ll,{ radius:6, color:'#fff', weight:2, fillColor:'#e11d48', fillOpacity:.7 }).addTo(map).bindPopup(`<b>${n}</b>`));
+const markers={};
+trails.forEach(t => {
+  markers[t.id] = L.circleMarker(t.ll,{ radius: t.stars===3?10:t.stars===2?8:6, color:'#fff', weight:2, fillColor:color(t.stars), fillOpacity:.95 })
+    .bindPopup(() => `<b>${t.name}</b><br>${'★'.repeat(t.stars)} · ${t.mi} mi · ${t.gain.toLocaleString()} ft<br>${evaluate(t, day).msg}`)
+    .on('click', () => highlight(t.id));
+});
+map.fitBounds(trails.map(t=>t.ll), { padding:[20,20] });
+function highlight(id){ document.querySelectorAll('.card').forEach(c => c.classList.toggle('active', c.dataset.id===id)); }
+
+// --- state ---
+let day='tue', maxDrive=180, minStars=1, fitOnly=false;
+try { const s=JSON.parse(localStorage.getItem('pdx-trails')||'{}'); if(s.day) day=s.day; if(s.maxDrive) maxDrive=s.maxDrive; if(s.minStars) minStars=s.minStars; if(s.fitOnly!=null) fitOnly=s.fitOnly; } catch(e){}
+function save(){ try{ localStorage.setItem('pdx-trails', JSON.stringify({day,maxDrive,minStars,fitOnly})); }catch(e){} }
+
+function render(){
+  document.querySelectorAll('#daySeg button').forEach(b=>b.classList.toggle('on',b.dataset.day===day));
+  document.querySelectorAll('#starSeg button').forEach(b=>b.classList.toggle('on',+b.dataset.min===minStars));
+  document.getElementById('maxDrive').value=maxDrive; document.getElementById('maxLbl').textContent=hrsFmt(maxDrive);
+  document.getElementById('fitOnly').checked=fitOnly;
+  const o=origins[day];
+  const rows = trails.map(t => ({ t, ev:evaluate(t,day) }))
+    .filter(r => r.ev.drive<=maxDrive && r.t.stars>=minStars && (!fitOnly || r.ev.cls!=='no'))
+    .sort((a,b) => b.t.stars-a.t.stars || a.ev.drive-b.ev.drive);
+  trails.forEach(t => { const show = rows.some(r=>r.t.id===t.id); if(show){ if(!map.hasLayer(markers[t.id])) markers[t.id].addTo(map); } else map.removeLayer(markers[t.id]); });
+  document.getElementById('count').textContent = `${rows.length} of ${trails.length} runs · within ${hrsFmt(maxDrive)} of ${o.name}`;
+  document.getElementById('cards').innerHTML = rows.map(({t,ev}) => `
+    <div class="card" data-id="${t.id}">
+      <h3><span class="stars">${'★'.repeat(t.stars)}</span>${t.name}</h3>
+      <div class="area">${t.region}</div>
+      <div class="stats">
+        <div class="stat"><b>${t.mi} mi</b><small>distance</small></div>
+        <div class="stat"><b>${t.gain.toLocaleString()}</b><small>ft gain</small></div>
+        <div class="stat"><b>~${t.hrs} h</b><small>run time</small></div>
+        <div class="stat"><b>${hrsFmt(ev.drive)}</b><small>drive from ${day==='tue'?'PDX':'Centralia'}</small></div>
+      </div>
+      <div class="fit ${ev.cls}">${ev.cls==='tight'?'Tight. ':''}${ev.msg}</div>
+      <div class="note">${t.note}</div>
+      <div class="meta">Pass: ${t.pass}</div>
+      <div class="links">
+        <a href="https://www.google.com/maps/dir/?api=1&origin=${o.ll[0]},${o.ll[1]}&destination=${t.ll[0]},${t.ll[1]}" target="_blank" rel="noopener">Directions ↗</a>
+        <a href="https://www.alltrails.com/search?q=${encodeURIComponent(t.name.replace(/[→–].*$/,'').trim())}" target="_blank" rel="noopener">AllTrails ↗</a>
+        ${t.region.includes('WA')?`<a href="https://www.wta.org/go-outside/hikes?title=${encodeURIComponent(t.name.split(/[→–(]/)[0].trim())}" target="_blank" rel="noopener">WTA ↗</a>`:''}
+      </div>
+    </div>`).join('');
+  document.querySelectorAll('.card').forEach(c => c.addEventListener('click', e => {
+    if(e.target.closest('a')) return;
+    const t = trails.find(x=>x.id===c.dataset.id);
+    map.flyTo(t.ll, 11, { duration:.6 }); markers[t.id].openPopup(); highlight(t.id);
+    if(window.innerWidth<700) document.getElementById('map').scrollIntoView({ behavior:'smooth' });
+  }));
+  save();
+}
+document.querySelectorAll('#daySeg button').forEach(b=>b.addEventListener('click',()=>{ day=b.dataset.day; render(); }));
+document.querySelectorAll('#starSeg button').forEach(b=>b.addEventListener('click',()=>{ minStars=+b.dataset.min; render(); }));
+document.getElementById('maxDrive').addEventListener('input', e=>{ maxDrive=+e.target.value; render(); });
+document.getElementById('fitOnly').addEventListener('change', e=>{ fitOnly=e.target.checked; render(); });
+render();
+</script>
+</body>
+</html>
