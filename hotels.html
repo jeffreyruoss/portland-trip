@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portland Hotel Picker · Sep 26–29</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+  :root {
+    --bg:#f7f6f2; --card:#fff; --ink:#1f2320; --muted:#5f665f; --line:#e2e0d8;
+    --accent:#2f6f4e; --accent-soft:#e4f0e9; --warn:#9a5b12; --warn-soft:#fbeedd;
+    --pick:#34518f; --pick-soft:#e8ecf8; --hotel:#c2410c; --bar:#7c3aed; --vegan:#15803d; --helium:#e11d48;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#15181a; --card:#1e2225; --ink:#e8e8e3; --muted:#a2a8a2; --line:#2e3438;
+      --accent:#7fc8a0; --accent-soft:#223a2e; --warn:#f0b96b; --warn-soft:#3d2f18; --pick:#a7b9ee; --pick-soft:#232c45; }
+  }
+  * { box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+  a { color:var(--accent); }
+  .wrap { max-width:1100px; margin:0 auto; padding:0 16px; }
+  header { padding:20px 0 10px; }
+  header h1 { margin:0; font-size:1.5rem; }
+  header p { margin:4px 0 0; color:var(--muted); font-size:.95rem; }
+  header nav { margin-top:6px; font-size:.9rem; }
+  #map { height:52vh; min-height:320px; border:1px solid var(--line); border-radius:12px; margin:12px 0 8px; }
+  .legend { display:flex; flex-wrap:wrap; gap:10px 18px; font-size:.82rem; color:var(--muted); margin-bottom:14px; }
+  .legend span::before { content:""; display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:6px; vertical-align:-1px; }
+  .legend .h::before { background:var(--hotel); } .legend .b::before { background:var(--bar); opacity:.5; }
+  .legend .v::before { background:var(--vegan); } .legend .k::before { background:var(--helium); }
+  .toolbar { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:6px 0 12px; font-size:.9rem; }
+  .toolbar button { border:1px solid var(--line); background:var(--card); color:var(--ink); padding:6px 12px; border-radius:999px; cursor:pointer; font-size:.88rem; }
+  .toolbar button.on { background:var(--accent-soft); border-color:var(--accent); color:var(--accent); font-weight:600; }
+  .toolbar .sp { flex:1; }
+  .toolbar .share { color:var(--muted); font-size:.82rem; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:14px 16px; cursor:pointer; transition:border-color .15s; }
+  .card:hover, .card.active { border-color:var(--hotel); }
+  .card h3 { margin:0; font-size:1.05rem; display:flex; align-items:center; gap:8px; }
+  .num { display:inline-flex; width:22px; height:22px; border-radius:50%; background:var(--hotel); color:#fff; font-size:.78rem; font-weight:700; align-items:center; justify-content:center; flex:none; }
+  .tag { font-size:.7rem; padding:2px 7px; border-radius:999px; font-weight:600; }
+  .tag.pick { background:var(--pick-soft); color:var(--pick); } .tag.warn { background:var(--warn-soft); color:var(--warn); }
+  .area { color:var(--muted); font-size:.85rem; margin:2px 0 8px; }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:8px 0; }
+  .stat { background:var(--bg); border-radius:8px; padding:6px 8px; }
+  .stat b { display:block; font-size:1.05rem; } .stat small { color:var(--muted); font-size:.72rem; line-height:1.2; display:block; }
+  .strips { font-size:.83rem; color:var(--muted); margin:6px 0; }
+  .strips b { color:var(--ink); font-weight:600; }
+  .note { font-size:.88rem; margin:6px 0; }
+  .price { display:flex; align-items:center; gap:8px; margin-top:8px; font-size:.88rem; flex-wrap:wrap; }
+  .price input { width:82px; padding:5px 7px; border:1px solid var(--line); border-radius:6px; background:var(--bg); color:var(--ink); font-size:.95rem; }
+  .price .tot { color:var(--muted); }
+  .links { margin-top:8px; font-size:.88rem; display:flex; gap:12px; }
+  .leaflet-popup-content { font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif; }
+  .leaflet-popup-content b { font-size:14px; }
+  footer { color:var(--muted); font-size:.8rem; padding:24px 0 40px; }
+  @media (max-width:600px) { #map { height:44vh; } .stats { grid-template-columns:repeat(3,1fr); } header h1 { font-size:1.3rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Portland hotel picker</h1>
+  <p>Sat Sep 26 – Tue Sep 29 · 3 nights · 2 people. Tap a hotel to see it on the map. Type in the price you actually get quoted and the link updates so you can send it to each other.</p>
+  <nav><a href="index.html">← Full trip plan</a></nav>
+</header>
+
+<div id="map"></div>
+<div class="legend">
+  <span class="h">Hotel (numbered)</span>
+  <span class="b">Bar / restaurant strip (~5-min walk radius)</span>
+  <span class="v">All-vegan restaurant</span>
+  <span class="k">Helium Comedy Club (Mon)</span>
+</div>
+
+<div class="toolbar">
+  Sort by:
+  <button data-sort="price" class="on">Price</button>
+  <button data-sort="walk">Walkability</button>
+  <button data-sort="helium">Distance to Helium</button>
+  <span class="sp"></span>
+  <span class="share" id="share"></span>
+</div>
+
+<div class="grid" id="cards"></div>
+
+<footer>
+  Walk times are estimates: straight-line distance × 1.3 street factor at a 3 mph pace. "Strips within 15 min" counts the purple circles reachable in a 15-minute walk. Est. prices are Sep 2026 web research averages across the three nights (Sat is higher) — use the "Check rate" links for real quotes. Nothing here is saved anywhere except this browser and the URL. Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
+</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const CHECK = q => `https://www.booking.com/searchresults.html?ss=${q}&checkin=2026-09-26&checkout=2026-09-29&group_adults=2`;
+const MAPS  = q => `https://www.google.com/maps/search/?api=1&query=${q}`;
+
+const hotels = [
+  { id:'grand_stark', name:'Hotel Grand Stark', area:'Central Eastside', addr:'509 SE Stark St', ll:[45.51944,-122.6605], est:160, tag:'pick', tagText:'Top pick',
+    note:'Boutique in a restored 1908 building. Lobby bar, restaurant, mid-century rooms. Dead center of the Central Eastside bars.', q:'Hotel+Grand+Stark+Portland' },
+  { id:'jupiter_next', name:'Jupiter NEXT', area:'E Burnside', addr:'910 E Burnside St', ll:[45.52283,-122.65641], est:170, tag:'pick', tagText:'Pick',
+    note:'Newer, quieter sibling of the Jupiter. Hey Love bar downstairs is a destination itself. Clean, modern.', q:'Jupiter+NEXT+Portland' },
+  { id:'kex', name:'KEX Portland', area:'E Burnside / MLK', addr:'100 NE MLK Jr Blvd', ll:[45.52381,-122.66141], est:165,
+    note:'Icelandic hostel-hotel: private rooms with bath, sauna, good restaurant + bar, social lobby.', q:'KEX+Portland' },
+  { id:'lolo_pass', name:'Lolo Pass', area:'E Burnside (east end)', addr:'1616 E Burnside St', ll:[45.52271,-122.64925], est:155,
+    note:'Hostel-hotel with private rooms, rooftop deck, coffee + cocktail bars. Between the Central Eastside and the 28th Ave strip.', q:'Lolo+Pass+Portland' },
+  { id:'jupiter', name:'Jupiter Hotel (original)', area:'E Burnside', addr:'800 E Burnside St', ll:[45.5226,-122.65733], est:130, tag:'warn', tagText:'Noisy',
+    note:'Converted motel, party vibe, thin walls. Burnside-facing rooms get club noise. Ask for courtyard side.', q:'Jupiter+Hotel+Portland' },
+  { id:'society', name:'The Society Hotel', area:'Old Town', addr:'203 NW 3rd Ave', ll:[45.52469,-122.67371], est:105, tag:'pick', tagText:'Budget pick',
+    note:'1881 boarding house turned polished budget hotel. Private rooms w/ shared bath ~$75–130, suites more. Rooftop deck. Old Town is rough after dark.', q:'The+Society+Hotel+Portland' },
+  { id:'crystal', name:'McMenamins Crystal Hotel', area:'Downtown / West End', addr:'303 SW 12th Ave', ll:[45.52275,-122.68337], est:130,
+    note:'Rooms above the Crystal Ballroom, soaking pool, bar + cafe downstairs. Shared baths (clean, key-locked). ~$105 weeknights, ~$175 Sat.', q:'McMenamins+Crystal+Hotel+Portland' },
+  { id:'mark_spencer', name:'Mark Spencer Hotel', area:'Downtown / Pearl edge', addr:'409 SW 11th Ave', ll:[45.52218,-122.68259], est:150,
+    note:'Reliable, a bit dated, kitchenettes, free breakfast. Powell\'s and the Pearl two blocks away. The safe choice.', q:'Mark+Spencer+Hotel+Portland' },
+  { id:'hoxton', name:'The Hoxton', area:'Old Town', addr:'15 NW 4th Ave', ll:[45.52335,-122.67461], est:215, tag:'warn', tagText:'Upper-mid',
+    note:'Stylish, great lobby bar and Tope rooftop. Worth it only if Sun/Mon rates dip. Same Old Town caveat.', q:'The+Hoxton+Portland' },
+];
+
+const strips = [
+  { name:'Central Eastside', ll:[45.51779,-122.65949], blurb:'Loyal Legion, Produce Row, Bit House, Obon, Lilla, distilleries' },
+  { name:'E Burnside / 28th', ll:[45.52324,-122.63751], blurb:'Laurelhurst Theater, Epif, Boxcar, Screen Door, bars on 28th' },
+  { name:'Hawthorne', ll:[45.51179,-122.62542], blurb:'Bagdad Theater, Next Level, Sapphire, Space Room' },
+  { name:'Belmont', ll:[45.51656,-122.62848], blurb:'Avalon, Norah, Mirisata (west end), Horse Brass' },
+  { name:'Division', ll:[45.50465,-122.63217], blurb:'Restaurant row, Salt & Straw, Lauretta Jean\'s' },
+  { name:'Mississippi', ll:[45.55434,-122.67583], blurb:'Prost!, Mississippi Studios, StormBreaker' },
+  { name:'Alberta', ll:[45.55899,-122.64453], blurb:'Alberta Rose, Chubby Bunny, Mis Tacones nearby' },
+  { name:'Pearl District', ll:[45.52468,-122.68188], blurb:'Deschutes, Teardrop, Powell\'s, galleries' },
+  { name:'Downtown / West End', ll:[45.522,-122.68144], blurb:'Crystal Ballroom, Multnomah Whiskey Library, Rabbits' },
+  { name:'Old Town', ll:[45.52266,-122.67312], blurb:'Voodoo, live music, dive bars — rough late' },
+  { name:'NW 23rd', ll:[45.52613,-122.69411], blurb:'Nob Hill shops and restaurants' },
+];
+
+const vegan = [
+  ['Obon Shokudo',[45.51755,-122.66051]], ['Lilla',[45.51275,-122.656]], ['Mirisata',[45.5162,-122.64102]],
+  ['Boxcar Pizza',[45.5289,-122.63823]], ['Epif',[45.52587,-122.63697]], ['Norah',[45.51657,-122.62427]],
+  ['Next Level Veggie Grill',[45.51236,-122.61968]], ['Baby Ketten Klub',[45.49851,-122.64091]], ['Rabbits Café',[45.52208,-122.67637]],
+  ['Mis Tacones',[45.5626,-122.64791]], ['Chubby Bunny',[45.55923,-122.65494]], ['Dirty Lettuce',[45.5485,-122.61441]],
+];
+const helium = { name:'Helium Comedy Club', ll:[45.51193,-122.65643] };
+
+// --- walk math ---
+function meters(a,b){ const R=6371000,toR=x=>x*Math.PI/180; const dLat=toR(b[0]-a[0]),dLon=toR(b[1]-a[1]);
+  const s=Math.sin(dLat/2)**2+Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLon/2)**2; return 2*R*Math.asin(Math.sqrt(s)); }
+const walkMin = (a,b) => Math.round(meters(a,b)*1.3/80);
+
+hotels.forEach(h => {
+  h.strips = strips.map(s => ({ name:s.name, min:walkMin(h.ll,s.ll) })).sort((a,b)=>a.min-b.min);
+  h.nearest = h.strips[0];
+  h.within15 = h.strips.filter(s=>s.min<=15);
+  h.helium = walkMin(h.ll, helium.ll);
+  h.vegan10 = vegan.filter(v => walkMin(h.ll,v[1])<=10).map(v=>v[0]);
+  h.walkScore = h.within15.length*10 - h.nearest.min; // more strips, closer nearest = better
+});
+
+// --- quotes in URL hash + localStorage ---
+function readQuotes(){
+  const q={};
+  try { Object.assign(q, JSON.parse(localStorage.getItem('pdx-hotel-quotes')||'{}')); } catch(e){}
+  const m=location.hash.match(/q=([^&]+)/);
+  if(m){ m[1].split(',').forEach(p=>{ const [k,v]=p.split(':'); if(k&&v) q[k]=+v; }); }
+  return q;
+}
+let quotes = readQuotes();
+function saveQuotes(){
+  try { localStorage.setItem('pdx-hotel-quotes', JSON.stringify(quotes)); } catch(e){}
+  const parts=Object.entries(quotes).filter(([k,v])=>v>0).map(([k,v])=>k+':'+v);
+  history.replaceState(null,'', parts.length ? '#q='+parts.join(',') : location.pathname);
+  document.getElementById('share').textContent = parts.length ? 'Prices are in the URL — copy the address bar to share.' : '';
+}
+const priceOf = h => quotes[h.id] > 0 ? quotes[h.id] : h.est;
+
+// --- map ---
+const map = L.map('map', { scrollWheelZoom:false }).setView([45.5215,-122.662], 13);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom:19, attribution:'© OpenStreetMap © CARTO' }).addTo(map);
+
+strips.forEach(s => {
+  L.circle(s.ll, { radius:350, color:'#7c3aed', weight:1, fillColor:'#7c3aed', fillOpacity:.15 }).addTo(map)
+   .bindPopup(`<b>${s.name}</b><br>${s.blurb}`);
+});
+vegan.forEach(([n,ll]) => L.circleMarker(ll,{ radius:5, color:'#15803d', fillColor:'#15803d', fillOpacity:.9, weight:1 }).addTo(map).bindPopup(`<b>${n}</b><br>100% vegan`));
+L.circleMarker(helium.ll,{ radius:8, color:'#fff', fillColor:'#e11d48', fillOpacity:1, weight:2 }).addTo(map).bindPopup('<b>Helium Comedy Club</b><br>Mon Sep 28');
+
+const markers = {};
+hotels.forEach((h,i) => {
+  h.n = i+1;
+  const icon = L.divIcon({ className:'', html:`<div style="width:26px;height:26px;border-radius:50%;background:#c2410c;color:#fff;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.4);font:700 12px/22px sans-serif;text-align:center">${h.n}</div>`, iconSize:[26,26], iconAnchor:[13,13] });
+  markers[h.id] = L.marker(h.ll,{ icon }).addTo(map)
+    .bindPopup(() => `<b>${h.n}. ${h.name}</b><br>${h.area} · ~$${priceOf(h)}/night<br>Nearest strip: ${h.nearest.name} (${h.nearest.min} min)<br>Helium: ${h.helium} min walk`)
+    .on('click', () => highlight(h.id));
+});
+
+function highlight(id){
+  document.querySelectorAll('.card').forEach(c => c.classList.toggle('active', c.dataset.id===id));
+}
+
+// --- cards ---
+let sortKey = 'price';
+function render(){
+  const list = [...hotels].sort((a,b) => {
+    if(sortKey==='price') return priceOf(a)-priceOf(b);
+    if(sortKey==='walk') return b.walkScore-a.walkScore;
+    return a.helium-b.helium;
+  });
+  document.getElementById('cards').innerHTML = list.map(h => `
+    <div class="card" data-id="${h.id}">
+      <h3><span class="num">${h.n}</span>${h.name}${h.tag?` <span class="tag ${h.tag}">${h.tagText}</span>`:''}</h3>
+      <div class="area">${h.area} · ${h.addr}</div>
+      <div class="stats">
+        <div class="stat"><b>$${priceOf(h)}</b><small>${quotes[h.id]>0?'your quote':'est.'} / night</small></div>
+        <div class="stat"><b>${h.nearest.min} min</b><small>to ${h.nearest.name}</small></div>
+        <div class="stat"><b>${h.helium} min</b><small>to Helium</small></div>
+      </div>
+      <div class="strips"><b>${h.within15.length} strip${h.within15.length===1?'':'s'} within 15 min:</b> ${h.within15.map(s=>`${s.name} (${s.min})`).join(', ')||'none'}</div>
+      ${h.vegan10.length?`<div class="strips"><b>Vegan within 10 min:</b> ${h.vegan10.join(', ')}</div>`:''}
+      <div class="note">${h.note}</div>
+      <div class="price">
+        <label>Quoted $/night <input type="number" inputmode="numeric" min="0" step="1" data-id="${h.id}" value="${quotes[h.id]>0?quotes[h.id]:''}" placeholder="${h.est}"></label>
+        <span class="tot">3 nights ≈ $${priceOf(h)*3} · $${Math.round(priceOf(h)*3/2)} each</span>
+      </div>
+      <div class="links"><a href="${CHECK(h.q)}" target="_blank" rel="noopener">Check rate ↗</a><a href="${MAPS(h.q)}" target="_blank" rel="noopener">Google Maps ↗</a></div>
+    </div>`).join('');
+
+  document.querySelectorAll('.card').forEach(c => c.addEventListener('click', e => {
+    if(e.target.closest('input,a')) return;
+    const h = hotels.find(x=>x.id===c.dataset.id);
+    map.flyTo(h.ll, 15, { duration:.6 }); markers[h.id].openPopup(); highlight(h.id);
+    if(window.innerWidth<700) document.getElementById('map').scrollIntoView({ behavior:'smooth' });
+  }));
+  document.querySelectorAll('.price input').forEach(inp => inp.addEventListener('change', () => {
+    const v=parseFloat(inp.value); if(v>0) quotes[inp.dataset.id]=Math.round(v); else delete quotes[inp.dataset.id];
+    saveQuotes(); render();
+  }));
+}
+document.querySelectorAll('.toolbar button').forEach(b => b.addEventListener('click', () => {
+  sortKey=b.dataset.sort; document.querySelectorAll('.toolbar button').forEach(x=>x.classList.toggle('on',x===b)); render();
+}));
+saveQuotes(); render();
+</script>
+</body>
+</html>

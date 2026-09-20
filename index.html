@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portland → Seattle Trip · Sep 26 – Oct 1, 2026</title>
+<style>
+  :root {
+    --bg: #f7f6f2; --card: #ffffff; --ink: #1f2320; --muted: #5f665f; --line: #e2e0d8;
+    --accent: #2f6f4e; --accent-soft: #e4f0e9; --warn-soft: #fbeedd; --warn: #9a5b12;
+    --pick-soft: #e8ecf8; --pick: #34518f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15181a; --card: #1e2225; --ink: #e8e8e3; --muted: #a2a8a2; --line: #2e3438;
+      --accent: #7fc8a0; --accent-soft: #223a2e; --warn-soft: #3d2f18; --warn: #f0b96b;
+      --pick-soft: #232c45; --pick: #a7b9ee; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
+  a { color: var(--accent); }
+  header { padding: 28px 20px 12px; max-width: 1040px; margin: 0 auto; }
+  header h1 { margin: 0 0 4px; font-size: 1.7rem; }
+  header p { margin: 0; color: var(--muted); }
+  nav { position: sticky; top: 0; background: var(--bg); border-bottom: 1px solid var(--line); z-index: 5; }
+  nav div { max-width: 1040px; margin: 0 auto; padding: 8px 20px; display: flex; gap: 6px; flex-wrap: wrap; }
+  nav a { text-decoration: none; padding: 5px 11px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); color: var(--ink); font-size: .9rem; }
+  main { max-width: 1040px; margin: 0 auto; padding: 8px 20px 60px; }
+  section { margin-top: 36px; }
+  h2 { font-size: 1.35rem; margin: 0 0 4px; }
+  h3 { font-size: 1.05rem; margin: 22px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 600; }
+  .lead { color: var(--muted); margin: 0 0 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+  .card h4 { margin: 0 0 4px; font-size: 1.02rem; }
+  .card p { margin: 6px 0 0; font-size: .93rem; }
+  .meta { color: var(--muted); font-size: .85rem; }
+  .tag { display: inline-block; font-size: .72rem; padding: 2px 8px; border-radius: 999px; margin-left: 6px; vertical-align: middle; font-weight: 600; }
+  .tag.pick { background: var(--pick-soft); color: var(--pick); }
+  .tag.vegan { background: var(--accent-soft); color: var(--accent); }
+  .tag.warn { background: var(--warn-soft); color: var(--warn); }
+  .day { display: grid; grid-template-columns: 110px 1fr; gap: 14px; padding: 14px 0; border-top: 1px solid var(--line); }
+  .day:first-of-type { border-top: 0; }
+  .day .when { font-weight: 700; }
+  .day .when small { display: block; color: var(--muted); font-weight: 400; }
+  .day ul { margin: 4px 0 0; padding-left: 18px; }
+  .callout { background: var(--accent-soft); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 6px; margin: 10px 0; }
+  .callout.warn { background: var(--warn-soft); border-color: var(--warn); }
+  table { width: 100%; border-collapse: collapse; font-size: .93rem; background: var(--card); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+  th, td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: .82rem; text-transform: uppercase; letter-spacing: .04em; }
+  tr:last-child td { border-bottom: 0; }
+  .todo label { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .todo input { margin-top: 5px; }
+  .todo input:checked + span { text-decoration: line-through; color: var(--muted); }
+  footer { color: var(--muted); font-size: .82rem; margin-top: 40px; }
+  @media (max-width: 520px) { .day { grid-template-columns: 1fr; gap: 4px; } }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Portland → Seattle</h1>
+  <p>Sat Sep 26 – Thu Oct 1, 2026 · two trail runs · vegan eats · fly home from SEA (probably)</p>
+</header>
+
+<nav><div>
+  <a href="#itinerary">Itinerary</a>
+  <a href="#hotels">Portland hotels</a>
+  <a href="hotels.html" style="border-color:var(--accent);color:var(--accent)">Hotel picker (map) →</a>
+  <a href="#runs">Trail runs</a>
+  <a href="#stays">Overnights</a>
+  <a href="#flyhome">Fly-home decision</a>
+  <a href="#vegan">Vegan eats</a>
+  <a href="#grocery">Groceries</a>
+  <a href="#todo">To decide / book</a>
+</div></nav>
+
+<main>
+
+<!-- ITINERARY -->
+<section id="itinerary">
+  <h2>Itinerary</h2>
+  <p class="lead">Assumes home airport is PHX. Portland lodging Sep 26–29 is split with your friend — possibly <strong>Juniper</strong> (tentative).</p>
+
+  <div class="day">
+    <div class="when">Sat–Tue<small>Sep 26–29</small></div>
+    <div><strong>Portland</strong> — staying with friends, maybe at <a href="https://www.google.com/maps/search/?api=1&query=Juniper+Portland+OR" target="_blank">Juniper</a> <span class="tag warn">Tentative</span>. No car needed.
+      <ul>
+        <li><strong>Mon Sep 28:</strong> <a href="https://portland.heliumcomedy.com/" target="_blank">Helium Comedy Club</a>, 1510 SE 9th Ave (<a href="https://www.google.com/maps/search/?api=1&query=Helium+Comedy+Club+1510+SE+9th+Ave+Portland" target="_blank">map</a>). It's in the Central Eastside — Obon Shokudo and Lilla are both a 5-minute walk for dinner beforehand.</li>
+        <li>Car-free run: <a href="https://www.google.com/maps/search/?api=1&query=Wildwood+Trail+Forest+Park+Portland" target="_blank">Forest Park / Wildwood Trail</a> — 30 mi of singletrack inside the city. Start at Lower Macleay Park or the Pittock Mansion lot.</li>
+        <li>Hit the Portland vegan spots below while you're in town — this is the deepest vegan scene of the trip.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="when">Tue<small>Sep 29</small></div>
+    <div><strong>Rent car → Gorge run → Centralia</strong>
+      <ul>
+        <li>Morning: pick up rental (neighborhood office is cheaper than PDX, see <a href="#flyhome">fly-home</a>).</li>
+        <li>Drive ~35 min east on I-84 to the Gorge. Run (options below). Grab lunch in Hood River if you go that far east, otherwise back through Portland.</li>
+        <li>Drive ~2.5 h north on I-5 to <strong>Centralia</strong> (or 1 h further to Olympia). Overnight.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="when">Wed<small>Sep 30</small></div>
+    <div><strong>Issaquah Alps run → Seattle → SeaTac overnight</strong>
+      <ul>
+        <li>I-5 north → I-405 → I-90 east to Issaquah / North Bend, ~1.5 h from Centralia. You skip Seattle traffic entirely.</li>
+        <li>Run (options below). Then head into Seattle for the afternoon/evening and a vegan dinner.</li>
+        <li>Sleep at a SeaTac airport hotel — cheaper than downtown, 5 min to the terminal.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="day">
+    <div class="when">Thu<small>Oct 1</small></div>
+    <div><strong>Fly home</strong> — drop car at SEA, fly SEA → PHX. (Alternative: drive 3 h back to PDX, see decision below.)</div>
+  </div>
+</section>
+
+<!-- PORTLAND HOTELS -->
+<section id="hotels">
+  <h2>Portland hotels · Sep 26–29</h2>
+  <p class="callout"><strong>Deciding with a friend?</strong> Use the <a href="hotels.html">hotel picker</a> — map, walk times, and a price field you can both fill in.</p>
+  <p class="lead">Mid-range, walkable to bars and restaurants, 3 nights for 2. Booking links are preloaded with your dates. Sat night runs $30–70 more than Sun/Mon everywhere. The Ace Hotel closed in 2023, so ignore old lists that mention it.</p>
+  <div class="callout"><strong>Stay on the east side.</strong> Helium, Obon Shokudo, Lilla, Mirisata, Boxcar and the E Burnside / Central Eastside bar strip are all within a mile of each other. Downtown hotels put a bridge between you and all of it.</div>
+
+  <h3>Central Eastside / E Burnside — closest to everything on your list</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>Hotel Grand Stark <span class="tag pick">Top pick</span></h4>
+      <div class="meta">509 SE Stark St · ~$115–200/night · ~0.7 mi to Helium</div>
+      <p>57-room boutique in a restored 1908 building. Lobby bar (Little Bitter Bar), restaurant, mid-century rooms. Right in the middle of the Central Eastside bars. No parking hassle since you have no car. <a href="https://www.booking.com/searchresults.html?ss=Hotel+Grand+Stark+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a> · <a href="https://hotelgrandstark.com/" target="_blank">Site</a></p>
+    </div>
+    <div class="card">
+      <h4>Jupiter NEXT <span class="tag pick">Pick</span></h4>
+      <div class="meta">910 E Burnside · ~$140–200/night · ~0.9 mi to Helium</div>
+      <p>Newer, quieter sibling of the Jupiter. Clean modern rooms, Hey Love bar downstairs (a scene on its own). TripAdvisor #32 of 159. Walk to Lolo Pass, Rontoms, Bit House, the whole E Burnside strip. <a href="https://www.booking.com/searchresults.html?ss=Jupiter+NEXT+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a></p>
+    </div>
+    <div class="card">
+      <h4>KEX Portland</h4>
+      <div class="meta">100 NE MLK Blvd · private rooms ~$150–180 · ~1 mi to Helium</div>
+      <p>Icelandic hostel-hotel: private rooms with bath, sauna, good restaurant and bar. Social lobby if you want to meet people, quiet rooms if you don't. <a href="https://www.booking.com/searchresults.html?ss=KEX+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a> · <a href="https://kexhotels.com/private-rooms" target="_blank">Site</a></p>
+    </div>
+    <div class="card">
+      <h4>Lolo Pass</h4>
+      <div class="meta">1616 E Burnside · private rooms ~$130–180 · ~1.1 mi to Helium</div>
+      <p>Hostel-hotel with private rooms, rooftop deck, coffee bar and cocktail bar. Slightly further east, on the 28th Ave strip side (Epif, Boxcar nearby). <a href="https://www.booking.com/searchresults.html?ss=Lolo+Pass+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a></p>
+    </div>
+    <div class="card">
+      <h4>Jupiter Hotel (original) <span class="tag warn">Noisy</span></h4>
+      <div class="meta">800 E Burnside · ~$105–155/night · ~0.9 mi to Helium</div>
+      <p>Cheapest east-side option. Converted motel, party vibe, thin walls, Burnside-facing rooms get club noise. Fine if you're out late anyway; ask for a courtyard room. <a href="https://www.booking.com/searchresults.html?ss=Jupiter+Hotel+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a></p>
+    </div>
+  </div>
+
+  <h3>Downtown / Old Town / Pearl — more choice, bridge walk to the east side</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>The Society Hotel <span class="tag pick">Budget pick</span></h4>
+      <div class="meta">203 NW 3rd Ave, Old Town · private rooms ~$75–130 (shared bath), suites more</div>
+      <p>1881 sailors' boarding house turned polished budget hotel. Rooftop deck, cafe/bar. Cheapest decent bed in town. Old Town is rough after dark, so plan your walk home. <a href="https://www.booking.com/searchresults.html?ss=The+Society+Hotel+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a></p>
+    </div>
+    <div class="card">
+      <h4>McMenamins Crystal Hotel</h4>
+      <div class="meta">303 SW 12th Ave · ~$105 weeknights / ~$175 Sat · shared baths</div>
+      <p>Rock-poster rooms above the Crystal Ballroom, soaking pool, Zeus Cafe and bar downstairs. ~50 bars within a 10-min walk. Shared baths are clean and key-locked. <a href="https://www.booking.com/searchresults.html?ss=McMenamins+Crystal+Hotel+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a></p>
+    </div>
+    <div class="card">
+      <h4>Mark Spencer Hotel</h4>
+      <div class="meta">409 SW 11th Ave · ~$150/night</div>
+      <p>Reliable, slightly dated, kitchenettes in many rooms, free breakfast. Powell's and the Pearl are two blocks away. The safe boring choice. <a href="https://www.booking.com/searchresults.html?ss=Mark+Spencer+Hotel+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a></p>
+    </div>
+    <div class="card">
+      <h4>The Hoxton <span class="tag warn">Upper-mid</span></h4>
+      <div class="meta">15 NW 4th Ave, Old Town · ~$180–250/night</div>
+      <p>Stylish, great lobby bar and Tope rooftop. Worth it if rates dip on Sun/Mon. Same Old Town caveat as Society. <a href="https://www.booking.com/searchresults.html?ss=The+Hoxton+Portland&checkin=2026-09-26&checkout=2026-09-29&group_adults=2" target="_blank">Check rate</a></p>
+    </div>
+  </div>
+  <p class="meta">How to walk between them: Grand Stark → Helium is a 15-min walk down SE Grand/9th. East side → downtown is 20 min over the Burnside or Hawthorne Bridge, or a 5-min MAX/bus ride.</p>
+</section>
+
+<!-- TRAIL RUNS -->
+<section id="runs">
+  <h2>Trail runs</h2>
+
+  <h3>Tue Sep 29 · Columbia River Gorge (east of Portland)</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>Wahkeena – Multnomah Falls Loop <span class="tag pick">Pick</span></h4>
+      <div class="meta">~5 mi · ~1,600 ft · 35 min from PDX</div>
+      <p>The classic. Waterfalls the whole way. Start at the <a href="https://www.google.com/maps/search/?api=1&query=Wahkeena+Falls+Trailhead" target="_blank">Wahkeena lot</a> so you hit the Multnomah crowds at the end, not the start. Add the Devil's Rest spur for ~8 mi / 2,400 ft.</p>
+      <p class="meta">Multnomah Falls I-84 lot has used timed-entry permits in summer. Usually done by late Sep — confirm on recreation.gov.</p>
+    </div>
+    <div class="card">
+      <h4>Angel's Rest</h4>
+      <div class="meta">~4.8 mi out-and-back · ~1,500 ft · 30 min from PDX</div>
+      <p>Closest Gorge trailhead to town. Steady climb to a rocky viewpoint over the river. Quieter than Multnomah. <a href="https://www.google.com/maps/search/?api=1&query=Angels+Rest+Trailhead" target="_blank">Map</a></p>
+    </div>
+    <div class="card">
+      <h4>Dog Mountain (WA side)</h4>
+      <div class="meta">~7 mi loop · ~2,800 ft · 1 h from PDX</div>
+      <p>Big vert, big views. Cross at Bridge of the Gods ($3 toll). Permits are only required on spring weekends. <a href="https://www.google.com/maps/search/?api=1&query=Dog+Mountain+Trailhead+Washington" target="_blank">Map</a></p>
+    </div>
+    <div class="card">
+      <h4>Eagle Creek to Punchbowl / Tunnel Falls</h4>
+      <div class="meta">4–12 mi out-and-back · gentle grade · 45 min from PDX</div>
+      <p>Runnable, cliff-edge trail with cables. Punchbowl Falls at ~2 mi, Tunnel Falls at ~6 mi. NW Forest Pass or $5 day fee at the lot. <a href="https://www.google.com/maps/search/?api=1&query=Eagle+Creek+Trailhead+Cascade+Locks" target="_blank">Map</a></p>
+    </div>
+  </div>
+
+  <h3>Wed Sep 30 · Issaquah Alps / North Bend (east of Seattle on I-90)</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>Tiger Mountain – Poo Poo Point <span class="tag pick">Pick</span></h4>
+      <div class="meta">~7 mi round trip · ~1,800 ft · Issaquah</div>
+      <p>Steady forested climb to a paraglider launch meadow with views over Lake Sammamish. Chirico Trail is the direct route; High School trailhead is the mellower one. <a href="https://www.google.com/maps/search/?api=1&query=Poo+Poo+Point+Chirico+Trailhead" target="_blank">Map</a></p>
+      <p class="meta">Discover Pass ($10/day, sold at lot) at DNR trailheads.</p>
+    </div>
+    <div class="card">
+      <h4>Rattlesnake Ledge / Ridge</h4>
+      <div class="meta">4 mi (Ledge) up to 11 mi (Ridge traverse) · North Bend</div>
+      <p>Best view-per-mile in the area. Ledge is 2 mi up with 1,160 ft; continue along the ridge for a real run. No pass needed at Rattlesnake Lake. <a href="https://www.google.com/maps/search/?api=1&query=Rattlesnake+Lake+Trailhead" target="_blank">Map</a></p>
+    </div>
+    <div class="card">
+      <h4>Cougar Mountain</h4>
+      <div class="meta">36 mi of trail · rolling · Issaquah / Bellevue</div>
+      <p>Mellow, mossy, endless loop options. Best for a relaxed run after Gorge legs. Red Town or Sky Country trailheads. Free (King County). <a href="https://www.google.com/maps/search/?api=1&query=Cougar+Mountain+Red+Town+Trailhead" target="_blank">Map</a></p>
+    </div>
+    <div class="card">
+      <h4>Mount Si</h4>
+      <div class="meta">8 mi round trip · 3,150 ft · North Bend</div>
+      <p>The big one. Relentless climb, great summit. Only if you want to hurt. Discover Pass. <a href="https://www.google.com/maps/search/?api=1&query=Mount+Si+Trailhead" target="_blank">Map</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- OVERNIGHTS -->
+<section id="stays">
+  <h2>Overnight stops</h2>
+
+  <h3>Tue night · between Portland and Seattle</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>Centralia, WA <span class="tag pick">Pick</span></h4>
+      <div class="meta">~1.5 h from Portland · ~1.5 h to Seattle · cheapest</div>
+      <p>True halfway point. <a href="https://www.mcmenamins.com/olympic-club" target="_blank">McMenamins Olympic Club</a> is the fun pick: old hotel + bar + theater, rooms often under $100 (many with shared bath). Chain motels off I-5 are cheaper still.</p>
+      <p class="meta">Vegan: no all-vegan spot, but Hash (Centralia) has marked vegan items and Burgerville has a vegan burger.</p>
+    </div>
+    <div class="card">
+      <h4>Olympia, WA</h4>
+      <div class="meta">~2 h from Portland · ~1 h to Seattle</div>
+      <p>Real town with a downtown, and it has an all-vegan restaurant (Wayside Café). Slightly pricier than Centralia, still well under Seattle.</p>
+    </div>
+    <div class="card">
+      <h4>Castle Rock / Kelso</h4>
+      <div class="meta">~1 h from Portland</div>
+      <p>Cheap, but too close to Portland to earn the stop. Only worth it if you run late in the Gorge.</p>
+    </div>
+  </div>
+
+  <h3>Wed night · Seattle side</h3>
+  <div class="grid">
+    <div class="card">
+      <h4>SeaTac airport hotels <span class="tag pick">Pick if flying SEA</span></h4>
+      <p>Cheapest sleep in the metro, 5 min to terminal, free shuttles, easy rental return. Boring but efficient.</p>
+    </div>
+    <div class="card">
+      <h4>Issaquah / North Bend</h4>
+      <p>Sleep near the trailhead if you'd rather run at dawn Thu and then drive. Suburban chains, moderate price.</p>
+    </div>
+    <div class="card">
+      <h4>Seattle proper</h4>
+      <p>Capitol Hill or U District puts you next to the vegan restaurants. Expect $200+. Parking is a hassle with the rental.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FLY HOME -->
+<section id="flyhome">
+  <h2>Fly home from Seattle or Portland?</h2>
+  <div class="callout"><strong>Answer: fly from SEA unless the one-way drop fee is more than ~$100.</strong> The drop fee is the whole decision — everything else is roughly a wash.</div>
+
+  <table>
+    <thead><tr><th></th><th>Drop at SEA, fly SEA → PHX</th><th>Drive back, fly PDX → PHX</th></tr></thead>
+    <tbody>
+      <tr><td>Rental</td><td>2 days + one-way drop fee ($0 to $150+, varies by company/week)</td><td>3 days, no drop fee</td></tr>
+      <tr><td>Extra cost</td><td>—</td><td>+1 rental day (~$50–80) + gas (~$25)</td></tr>
+      <tr><td>Time</td><td>Wake up 5 min from airport</td><td>3+ h on I-5 the morning of your flight</td></tr>
+      <tr><td>Flight</td><td>Alaska, Southwest, American, Delta. ~$100–200 one-way</td><td>Often slightly cheaper (Frontier, Southwest). ~$110–170 one-way</td></tr>
+    </tbody>
+  </table>
+
+  <h3>How to price it</h3>
+  <ul>
+    <li>On <a href="https://www.kayak.com/cars" target="_blank">Kayak</a>, search pickup Portland Sep 29 → drop SEA Oct 1, then the same with drop Portland Oct 1. Compare across brands; drop fees vary wildly.</li>
+    <li>Pick up at a <strong>neighborhood office</strong> (not PDX) to skip the ~10% airport concession fee. Enterprise/Hertz downtown or on the eastside are MAX-accessible.</li>
+    <li>Check <a href="https://www.google.com/travel/flights?q=flights+from+SEA+to+PHX+on+2026-10-01" target="_blank">SEA → PHX Oct 1</a> and <a href="https://www.google.com/travel/flights?q=flights+from+PDX+to+PHX+on+2026-10-01" target="_blank">PDX → PHX Oct 1</a> on Google Flights.</li>
+  </ul>
+</section>
+
+<!-- VEGAN -->
+<section id="vegan">
+  <h2>All-vegan restaurants</h2>
+  <p class="lead">Everything tagged <span class="tag vegan">100% vegan</span> is fully plant-based. Portland has lost a lot of vegan spots in 2024–26 (Blossoming Lotus, Sudra, Sweet Hereafter, Paradox, Vertical Diner, Virtuous Pie all closed) — confirm hours on Google or HappyCow the day of.</p>
+
+  <h3>Portland</h3>
+  <div class="grid">
+    <div class="card"><h4>Obon Shokudo <span class="tag vegan">100% vegan</span> <span class="tag pick">Pick</span></h4><div class="meta">Japanese comfort food · 720 SE Grand Ave</div><p>Onigiri, noodles, curry. Portland Monthly's 2026 best-vegan list. <a href="https://www.google.com/maps/search/?api=1&query=Obon+Shokudo+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Boxcar Pizza <span class="tag vegan">100% vegan</span> <span class="tag pick">Pick</span></h4><div class="meta">Detroit-style pizza · 2701 NE Sandy Blvd</div><p>Thick, crispy-edged squares. Every pie available GF. <a href="https://www.google.com/maps/search/?api=1&query=Boxcar+Pizza+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Mirisata <span class="tag vegan">100% vegan</span> <span class="tag pick">Pick</span></h4><div class="meta">Sri Lankan · 2420 SE Belmont St</div><p>Worker-owned co-op. Rice & curry plates, roti, croquettes. Great post-run carb load. <a href="https://www.google.com/maps/search/?api=1&query=Mirisata+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Epif <span class="tag vegan">100% vegan</span></h4><div class="meta">South American brunch · 404 NE 28th Ave</div><p>Brunch, coffee, pisco sours. Kerns neighborhood. <a href="https://epifpdx.com/" target="_blank">Site</a></p></div>
+    <div class="card"><h4>Dirty Lettuce <span class="tag vegan">100% vegan</span></h4><div class="meta">Southern / Cajun · 4727 NE Fremont St</div><p>Fried chick'n, catfish, jambalaya, candied yams. <a href="https://www.google.com/maps/search/?api=1&query=Dirty+Lettuce+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Lilla <span class="tag vegan">100% vegan</span></h4><div class="meta">Italian · 960 SE Madison St</div><p>Fresh pasta, pizza, panna cotta. Nicer-dinner option. <a href="https://www.google.com/maps/search/?api=1&query=Lilla+vegan+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Ben & Esther's <span class="tag vegan">100% vegan</span></h4><div class="meta">Jewish deli · 6912 NE Sandy Blvd</div><p>Bagels, lox, brisket sandwiches. Good breakfast grab. <a href="https://www.google.com/maps/search/?api=1&query=Ben+and+Esthers+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Mis Tacones <span class="tag vegan">100% vegan</span></h4><div class="meta">Mexican · 1670 NE Killingsworth St</div><p>Tacos, empanadas, conchas, champurrado. Attached vegan bakery. <a href="https://www.google.com/maps/search/?api=1&query=Mis+Tacones+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Norah <span class="tag vegan">100% vegan</span></h4><div class="meta">Asian-American fusion · 3801 SE Belmont St</div><p>Noodles, wingz, lots of GF. <a href="https://www.google.com/maps/search/?api=1&query=Norah+vegan+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Next Level Veggie Grill <span class="tag vegan">100% vegan</span></h4><div class="meta">Burgers & shakes · 4121 SE Hawthorne Blvd</div><p>Junk-food fix. <a href="https://www.google.com/maps/search/?api=1&query=Next+Level+Veggie+Grill+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Chubby Bunny <span class="tag vegan">100% vegan</span></h4><div class="meta">Breakfast sandwiches · 1027 NE Alberta St</div><p>Quick pre-run breakfast. <a href="https://www.google.com/maps/search/?api=1&query=Chubby+Bunny+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Baby Ketten Klub <span class="tag vegan">100% vegan</span></h4><div class="meta">Bar + karaoke · 2433 SE Powell Blvd</div><p>Vegan junk food and karaoke. Night out with your friend. <a href="https://www.google.com/maps/search/?api=1&query=Baby+Ketten+Klub+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Sushi Love <span class="tag vegan">100% vegan</span> <span class="tag warn">Thu–Sat 5–9 only</span></h4><div class="meta">Sushi takeout · GF</div><p>Only open Sat Sep 26 during your window. <a href="https://www.google.com/maps/search/?api=1&query=Sushi+Love+vegan+Portland" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Rabbits Café <span class="tag vegan">100% vegan</span> <span class="tag warn">Verify open</span></h4><div class="meta">Breakfast · 555 SW Oak St, downtown</div><p>Waffles and gravy. Downtown = walkable from most hotels. <a href="https://www.google.com/maps/search/?api=1&query=Rabbits+Cafe+Portland" target="_blank">Map</a></p></div>
+  </div>
+  <p class="meta">Full 80-spot list incl. food carts: <a href="https://vegandollhouse.com/blog/portland-vegan-restaurants/" target="_blank">Vegan Dollhouse</a> · <a href="https://www.happycow.net/best-vegan-restaurants/portland-oregon" target="_blank">HappyCow Portland</a></p>
+
+  <h3>Gorge / Hood River (Tue, only if you go that far east)</h3>
+  <div class="grid">
+    <div class="card"><h4>Remedy Juice Cafe</h4><div class="meta">Hood River · 8am–5pm</div><p>Juices, smoothies, bowls, house-made nut milks. Not labeled all-vegan but essentially is. <a href="https://www.google.com/maps/search/?api=1&query=Remedy+Juice+Cafe+Hood+River" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Ferment Brewing / Pfriem</h4><div class="meta">Hood River · brewpubs</div><p>Vegan brat & burger at Ferment; one vegan entrée at Pfriem. Beer after the run.</p></div>
+  </div>
+
+  <h3>Centralia / Olympia (Tue night)</h3>
+  <div class="grid">
+    <div class="card"><h4>Wayside Café <span class="tag vegan">100% vegan</span></h4><div class="meta">Olympia · Southern comfort</div><p>Jackfruit BBQ, wings, fried chick'n. The reason to stay in Olympia over Centralia. <a href="https://www.google.com/maps/search/?api=1&query=Wayside+Cafe+Olympia" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Hash</h4><div class="meta">Centralia · diner · Tue–Thu 7am–8pm</div><p>Marked vegan tofu hash, vegan fried chicken sandwich, Beyond burger. Best bet in Centralia. <a href="https://www.google.com/maps/search/?api=1&query=Hash+Centralia+WA" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Burgerville</h4><div class="meta">Centralia · fast food, I-5 exit</div><p>Whole-food vegan burger (chickpea, lentil, beet). Fine in a pinch.</p></div>
+  </div>
+
+  <h3>Seattle & Eastside (Wed)</h3>
+  <div class="grid">
+    <div class="card"><h4>Plum Bistro <span class="tag vegan">100% vegan</span> <span class="tag pick">Pick</span></h4><div class="meta">Upscale · Capitol Hill</div><p>The one to hit if you only do one. Named a top-10 upscale vegan restaurant in the US. <a href="https://www.google.com/maps/search/?api=1&query=Plum+Bistro+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Kati Vegan Thai <span class="tag vegan">100% vegan</span> <span class="tag pick">Pick</span></h4><div class="meta">Thai · 1190 Thomas St, South Lake Union</div><p>Modern Thai, big portions. Easy parking area. <a href="https://www.google.com/maps/search/?api=1&query=Kati+Vegan+Thai+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Life on Mars <span class="tag vegan">100% vegan</span></h4><div class="meta">Bar + comfort food · Capitol Hill</div><p>Great cocktails, records, vegan bar food. Evening spot. <a href="https://www.google.com/maps/search/?api=1&query=Life+on+Mars+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Wayward Vegan Café <span class="tag vegan">100% vegan</span></h4><div class="meta">Diner / brunch · 801 NE 65th St, near Green Lake</div><p>Big comfort-food portions. Post-run refuel. <a href="https://www.google.com/maps/search/?api=1&query=Wayward+Vegan+Cafe+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Pi Vegan Pizzeria <span class="tag vegan">100% vegan</span></h4><div class="meta">Pizza · 5301 Roosevelt Way NE</div><p>"America's oldest vegan pizzeria." Drumsticks, mac-n-cheese. <a href="https://www.google.com/maps/search/?api=1&query=Pi+Vegan+Pizzeria+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Araya's Place <span class="tag vegan">100% vegan</span></h4><div class="meta">Thai · 5240 University Way NE</div><p>Seattle's first vegan Thai. Also a Bellevue location on the Eastside, closer to Issaquah. <a href="https://www.google.com/maps/search/?api=1&query=Arayas+Place" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Ba Bar Green <span class="tag vegan">100% vegan</span></h4><div class="meta">Vietnamese · U District</div><p>Vegan pho, banh mi, rice plates. <a href="https://www.google.com/maps/search/?api=1&query=Ba+Bar+Green+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Vital Creations Vegan Cafe <span class="tag vegan">100% vegan</span></h4><div class="meta">Burgers & bowls · Fremont</div><p>Casual, near the Fremont Troll. <a href="https://www.google.com/maps/search/?api=1&query=Vital+Creations+Vegan+Cafe+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Harvest Beat <span class="tag vegan">100% vegan</span> <span class="tag warn">$100+ · reserve</span></h4><div class="meta">Fine dining · 1711 N 45th St, Wallingford</div><p>5-course seasonal tasting menu, Wed–Sun. Splurge option for Wed night. <a href="https://www.google.com/maps/search/?api=1&query=Harvest+Beat+Seattle" target="_blank">Map</a></p></div>
+    <div class="card"><h4>Cafe Flora <span class="tag warn">Vegetarian, not all-vegan</span></h4><div class="meta">Madison Valley + a SeaTac airport outpost</div><p>Most dishes veganizable. Handy: there's one inside SEA for breakfast Thu before your flight.</p></div>
+  </div>
+  <p class="meta"><a href="https://www.happycow.net/best-vegan-restaurants/seattle-washington" target="_blank">HappyCow Seattle</a> · <a href="https://veggiesabroad.com/vegan-restaurant-guide-to-seattle/" target="_blank">Veggies Abroad Seattle guide</a></p>
+</section>
+
+<!-- GROCERY -->
+<section id="grocery">
+  <h2>Grocery stores</h2>
+  <div class="grid">
+    <div class="card"><h4>Portland</h4><p><strong>New Seasons Market</strong> (local, huge vegan deli/hot bar, many locations) · <strong>Whole Foods</strong> (Pearl, Hollywood) · <strong>Trader Joe's</strong> · <strong>Fred Meyer</strong> for cheap staples.</p></div>
+    <div class="card"><h4>Centralia / Olympia</h4><p>Centralia: <strong>Safeway</strong>, <strong>Fred Meyer</strong> off I-5. Olympia: <strong>Olympia Food Co-op</strong> (two stores, very vegan-friendly).</p></div>
+    <div class="card"><h4>Seattle / Eastside</h4><p><strong>PCC Community Markets</strong> (Issaquah has one, right off I-90 — stock up before the run) · <strong>Vegan Haven</strong> (all-vegan grocery, U District) · <strong>Whole Foods</strong> · <strong>Trader Joe's</strong>.</p></div>
+  </div>
+</section>
+
+<!-- TODO -->
+<section id="todo">
+  <h2>To decide / book</h2>
+  <div class="todo">
+    <label><input type="checkbox" data-k="drop"><span>Price rental: Portland Sep 29 → SEA Oct 1 vs → Portland Oct 1. Note the drop fee.</span></label>
+    <label><input type="checkbox" data-k="flight"><span>Book flight home Oct 1 (SEA or PDX, based on drop fee).</span></label>
+    <label><input type="checkbox" data-k="car"><span>Book rental (neighborhood office, not PDX, if convenient).</span></label>
+    <label><input type="checkbox" data-k="tue"><span>Book Tue night: Centralia (McMenamins Olympic Club) or Olympia.</span></label>
+    <label><input type="checkbox" data-k="wed"><span>Book Wed night: SeaTac hotel (or Issaquah if driving back to PDX).</span></label>
+    <label><input type="checkbox" data-k="permit"><span>Check Multnomah Falls timed-entry status on recreation.gov for Sep 29.</span></label>
+    <label><input type="checkbox" data-k="pass"><span>Plan to buy a WA Discover Pass at the trailhead ($10) if doing Tiger Mtn / Mount Si.</span></label>
+    <label><input type="checkbox" data-k="plum"><span>Reserve Plum Bistro (or Harvest Beat) for Wed dinner.</span></label>
+    <label><input type="checkbox" data-k="juniper"><span>Confirm Portland lodging with friends — Juniper, or pick from the hotel list (Grand Stark / Jupiter NEXT are the picks).</span></label>
+    <label><input type="checkbox" data-k="helium"><span>Helium Comedy Club Mon Sep 28 — confirm showtime and tickets.</span></label>
+  </div>
+</section>
+
+<footer>Built Sep 20, 2026. Prices and hours are from web research at that time — confirm before booking. Checkbox state is saved in this browser only.</footer>
+
+</main>
+
+<script>
+  // Persist the to-do checkboxes in localStorage (best effort).
+  document.querySelectorAll('.todo input').forEach(function (cb) {
+    var key = 'pdx-trip-' + cb.dataset.k;
+    try { cb.checked = localStorage.getItem(key) === '1'; } catch (e) {}
+    cb.addEventListener('change', function () {
+      try { localStorage.setItem(key, cb.checked ? '1' : '0'); } catch (e) {}
+    });
+  });
+</script>
+</body>
+</html>
