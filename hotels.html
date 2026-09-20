@@ -76,8 +76,8 @@
 
 <div class="toolbar">
   Sort by:
-  <button data-sort="price" class="on">Price</button>
-  <button data-sort="walk">Walkability</button>
+  <button data-sort="walk" class="on">Walkability</button>
+  <button data-sort="price">Price</button>
   <button data-sort="helium">Distance to Helium</button>
   <span class="sp"></span>
   <span class="share" id="share"></span>
@@ -171,7 +171,7 @@ const priceOf = h => quotes[h.id] > 0 ? quotes[h.id] : h.est;
 
 // --- map ---
 const map = L.map('map', { scrollWheelZoom:false }).setView([45.5215,-122.662], 13);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom:19, attribution:'© OpenStreetMap © CARTO' }).addTo(map);
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:19, attribution:'© OpenStreetMap contributors' }).addTo(map);
 
 strips.forEach(s => {
   L.circle(s.ll, { radius:350, color:'#7c3aed', weight:1, fillColor:'#7c3aed', fillOpacity:.15 }).addTo(map)
@@ -194,7 +194,7 @@ function highlight(id){
 }
 
 // --- cards ---
-let sortKey = 'price';
+let sortKey = 'walk';
 function render(){
   const list = [...hotels].sort((a,b) => {
     if(sortKey==='price') return priceOf(a)-priceOf(b);
