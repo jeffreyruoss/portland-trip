@@ -61,7 +61,7 @@
 <div class="wrap">
 <header>
   <h1>Trail run picker</h1>
-  <p>Two run days: <strong>Tue Sep 29 afternoon</strong> (car at PDX ~1:30pm, sunset 6:55, sleep in Centralia) and <strong>Wed Sep 30</strong> (start from Centralia, end in Portland). Pick a day, set how far you'll drive, and the cards tell you whether it fits and when you'd arrive. The third option, <strong>Wed from Leavenworth</strong>, is the Enchantments plan: skip Centralia, drive PDX → Leavenworth Tuesday (4 h 45, or 5 h 30 with a quick Angel's Rest run first), sleep there, run at dawn, drive 5 h back to Portland.</p>
+  <p>Two run days: <strong>Tue Sep 29 afternoon</strong> (car at PDX ~1:30pm, sunset 6:55, sleep in Centralia) and <strong>Wed Sep 30</strong> (start and end in Centralia — you're there both nights). Pick a day, set how far you'll drive, and the cards tell you whether it fits and when you'd arrive. The third option, <strong>Wed from Leavenworth</strong>, is the Enchantments alternative and only works if you swap the Centralia nights for Leavenworth.</p>
   <nav><a href="index.html">← Trip plan</a></nav>
 </header>
 
@@ -92,7 +92,7 @@
 <div class="grid" id="cards"></div>
 
 <footer>
-  Drive times are estimates for a weekday with no traffic; add 20–30 min for Tacoma/JBLM on I-5 in the afternoon. "Fits" assumes 20 min at the trailhead to park and change, a comfortable trail-run pace, and Tuesday done running 10 min before sunset; Wednesday back in Portland by 8pm. Passes: NW Forest Pass / $5 day fee at most Oregon Forest Service trailheads; Discover Pass ($10/day) at WA state trailheads; $30 per car at Mount Rainier. Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
+  Drive times are estimates for a weekday with no traffic; add 20–30 min for Tacoma/JBLM on I-5 in the afternoon. "Fits" assumes 20 min at the trailhead to park and change, a comfortable trail-run pace, and Tuesday done running 10 min before sunset; Wednesday back in Centralia by 8pm (Thu you drive Centralia → PDX, ~1 h 45, car due 1pm). Passes: NW Forest Pass / $5 day fee at most Oregon Forest Service trailheads; Discover Pass ($10/day) at WA state trailheads; $30 per car at Mount Rainier. Map © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
 </footer>
 </div>
 
@@ -162,7 +162,7 @@ const trails = [
 
 const origins = {
   tue: { name:'PDX (Tue 1:30pm)', ll:[45.5871,-122.5928], key:'pdx', startMin:13*60+30, deadline:18*60+45, after:'toCent', afterName:'Centralia', afterLabel:'ETA Centralia' },
-  wed: { name:'Centralia (Wed 8am)', ll:[46.7204,-122.9614], key:'cent', startMin:8*60, deadline:20*60, after:'toPdx', afterName:'Portland', afterLabel:'ETA Portland' },
+  wed: { name:'Centralia (Wed 8am)', ll:[46.7204,-122.9614], key:'cent', startMin:8*60, deadline:20*60, after:'toCent', afterName:'Centralia', afterLabel:'ETA back in Centralia' },
   leav: { name:'Leavenworth (Wed 6:30am)', ll:[47.5962,-120.6615], key:'leav', startMin:6*60+30, deadline:20*60, after:'toPdx', afterName:'Portland', afterLabel:'ETA Portland' },
 };
 trails.forEach(t => { if(t.leav==null) t.leav = 999; });
